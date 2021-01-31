@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 import "reflect-metadata";
 import * as express from "express";
 import * as jwt from "express-jwt";
@@ -32,7 +32,7 @@ const main = async () => {
 			};
 			return context;
 		},
-		debug: process.env.NODE_ENV !== 'production'
+		debug: process.env.NODE_ENV !== "production",
 	});
 
 	app.get("/", (_, res) => {
@@ -50,6 +50,18 @@ const main = async () => {
 
 	apolloServer.applyMiddleware({ app, path: PATH });
 
+	app.use(function (
+		err: Error,
+		_: any,
+		res: express.Response,
+		next: express.NextFunction
+	) {
+		if (err) {
+			res.status(401).send("Internal Server Error");
+		} else {
+			next(err);
+		}
+	});
 
 	app.listen(PORT, () => {
 		console.log(`🚀 Server started at http://localhost:${PORT}`);

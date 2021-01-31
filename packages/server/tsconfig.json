@@ -27,7 +27,8 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "baseUrl": ".",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "esModuleInterop": false
   },
   "exclude": [
     "node_modules"

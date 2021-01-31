@@ -29,7 +29,6 @@ export class UserResolver {
 		try {
 			await user.save();
 		} catch (error) {
-			console.log(error.detail);
 			if (error.detail.includes("already exists")) {
 				return {
 					errors: [
@@ -105,8 +104,21 @@ export class UserResolver {
 	}
 
 	@Authorized()
-	@Query(() => User, { nullable: true })
-	async me(@Ctx() ctx: ContextType): Promise<User | undefined> {
-		return await User.findOne({ where: { email: ctx.user.email } });
+	@Query(() => UserResponse, { nullable: true })
+	async me(@Ctx() ctx: ContextType): Promise<UserResponse> {
+		const user = await User.findOne({ where: { email: ctx.user.email } });
+		if (user) {
+			return {
+				user,
+			};
+		}
+		return {
+			errors: [
+				{
+					message: "invalid login",
+					field: "user",
+				},
+			],
+		};
 	}
 }
