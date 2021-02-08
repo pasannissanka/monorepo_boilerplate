@@ -1,28 +1,31 @@
-import React from "react";
 import {
 	AppBar,
-	CssBaseline,
+	Backdrop,
+	Badge,
 	Drawer,
 	fade,
 	IconButton,
 	InputBase,
 	makeStyles,
+	Menu,
 	MenuItem,
 	Toolbar,
 	Typography,
-	Menu,
-	Badge,
-	Backdrop,
 } from "@material-ui/core";
 import {
 	AccountCircle,
 	Close,
+	Home,
+	Inbox,
 	Mail,
-	Notifications,
-	Search,
 	Menu as MenuIcon,
 	More,
+	Notifications,
+	Search,
 } from "@material-ui/icons/";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import CustomDrawer from "../Drawer/Drawer";
 
 interface Props {
 	window?: () => Window;
@@ -115,6 +118,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Navbar = (props: Props) => {
+	const location = useLocation();
 	const classes = useStyles();
 	const [drawerToggle, setdrawerToggle] = React.useState(false);
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -123,13 +127,15 @@ export const Navbar = (props: Props) => {
 		setMobileMoreAnchorEl,
 	] = React.useState<null | HTMLElement>(null);
 
-	const handleDrawerToggle = () => {
-		setdrawerToggle(!drawerToggle);
-	};
-
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+	const msgCount = 4;
+	const notificationCount = 4;
+
+	const handleDrawerToggle = () => {
+		setdrawerToggle(!drawerToggle);
+	};
 	const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
 		setAnchorEl(event.currentTarget);
 	};
@@ -144,8 +150,27 @@ export const Navbar = (props: Props) => {
 		handleMobileMenuClose();
 	};
 
+	const drawerContent =
+		location.pathname.includes("/login") ||
+		location.pathname.includes("/register")
+			? []
+			: [
+					{
+						icon: <Home />,
+						to: "/",
+						primary: "Home",
+					},
+					{
+						icon: <Inbox />,
+						to: "/about",
+						primary: "About",
+					},
+			  ];
+
 	const drawer = (
-		<div className={classes.drawerContainer}>{props.drawerChildren}</div>
+		<div className={classes.drawerContainer} onClick={handleDrawerToggle}>
+			{CustomDrawer(drawerContent)}
+		</div>
 	);
 
 	const menuId = "primary-search-account-menu";
@@ -159,8 +184,11 @@ export const Navbar = (props: Props) => {
 			open={isMenuOpen}
 			onClose={handleMenuClose}
 		>
-			<MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-			<MenuItem onClick={handleMenuClose}>My account</MenuItem>
+			{/* <MenuItem onClick={handleMenuClose}>Profile</MenuItem> */}
+			{/* <MenuItem onClick={handleMenuClose}>My account</MenuItem> */}
+			<Link to="/login" style={{ color: "black", textDecoration: "none" }}>
+				<MenuItem onClick={handleMenuClose}>Login</MenuItem>
+			</Link>
 		</Menu>
 	);
 
@@ -176,16 +204,16 @@ export const Navbar = (props: Props) => {
 			onClose={handleMobileMenuClose}
 		>
 			<MenuItem>
-				<IconButton aria-label="show 4 new mails" color="inherit">
-					<Badge badgeContent={4} color="secondary">
+				<IconButton aria-label="show new mails" color="inherit">
+					<Badge badgeContent={msgCount} color="secondary">
 						<Mail />
 					</Badge>
 				</IconButton>
 				<p>Messages</p>
 			</MenuItem>
 			<MenuItem>
-				<IconButton aria-label="show 11 new notifications" color="inherit">
-					<Badge badgeContent={11} color="secondary">
+				<IconButton aria-label="show notifications" color="inherit">
+					<Badge badgeContent={notificationCount} color="secondary">
 						<Notifications />
 					</Badge>
 				</IconButton>
@@ -207,10 +235,9 @@ export const Navbar = (props: Props) => {
 
 	return (
 		<React.Fragment>
-			<CssBaseline />
 			<AppBar position="fixed" className={classes.appBar}>
 				<Toolbar>
-					{props.drawerChildren ? (
+					{drawerContent.length > 0 ? (
 						<IconButton
 							color="inherit"
 							aria-label="open drawer"
@@ -225,52 +252,58 @@ export const Navbar = (props: Props) => {
 					<Typography className={classes.title} variant="h6" noWrap>
 						Material-UI
 					</Typography>
-					<div className={classes.search}>
-						<div className={classes.searchIcon}>
-							<Search />
-						</div>
-						<InputBase
-							placeholder="Search…"
-							classes={{
-								root: classes.inputRoot,
-								input: classes.inputInput,
-							}}
-							inputProps={{ "aria-label": "search" }}
-						/>
-					</div>
-					<div className={classes.sectionDesktop}>
-						<IconButton aria-label="show 4 new mails" color="inherit">
-							<Badge badgeContent={4} color="secondary">
-								<Mail />
-							</Badge>
-						</IconButton>
-						<IconButton aria-label="show 17 new notifications" color="inherit">
-							<Badge badgeContent={17} color="secondary">
-								<Notifications />
-							</Badge>
-						</IconButton>
-						<IconButton
-							edge="end"
-							aria-label="account of current user"
-							aria-controls={menuId}
-							aria-haspopup="true"
-							onClick={handleProfileMenuOpen}
-							color="inherit"
-						>
-							<AccountCircle />
-						</IconButton>
-					</div>
-					<div className={classes.sectionMobile}>
-						<IconButton
-							aria-label="show more"
-							aria-controls={mobileMenuId}
-							aria-haspopup="true"
-							onClick={handleMobileMenuOpen}
-							color="inherit"
-						>
-							<More />
-						</IconButton>
-					</div>
+					{drawerContent.length > 0 ? (
+						<React.Fragment>
+							<div className={classes.search}>
+								<div className={classes.searchIcon}>
+									<Search />
+								</div>
+								<InputBase
+									placeholder="Search…"
+									classes={{
+										root: classes.inputRoot,
+										input: classes.inputInput,
+									}}
+									inputProps={{ "aria-label": "search" }}
+								/>
+							</div>
+							<div className={classes.sectionDesktop}>
+								<IconButton aria-label="show new mails" color="inherit">
+									<Badge badgeContent={msgCount} color="secondary">
+										<Mail />
+									</Badge>
+								</IconButton>
+								<IconButton aria-label="show new notifications" color="inherit">
+									<Badge badgeContent={notificationCount} color="secondary">
+										<Notifications />
+									</Badge>
+								</IconButton>
+								<IconButton
+									edge="end"
+									aria-label="account of current user"
+									aria-controls={menuId}
+									aria-haspopup="true"
+									onClick={handleProfileMenuOpen}
+									color="inherit"
+								>
+									<AccountCircle />
+								</IconButton>
+							</div>
+							<div className={classes.sectionMobile}>
+								<IconButton
+									aria-label="show more"
+									aria-controls={mobileMenuId}
+									aria-haspopup="true"
+									onClick={handleMobileMenuOpen}
+									color="inherit"
+								>
+									<More />
+								</IconButton>
+							</div>
+						</React.Fragment>
+					) : (
+						<React.Fragment></React.Fragment>
+					)}
 				</Toolbar>
 			</AppBar>
 			{renderMobileMenu}

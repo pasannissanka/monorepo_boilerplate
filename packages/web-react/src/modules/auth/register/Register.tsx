@@ -14,10 +14,9 @@ import {
 import { LockOutlined } from "@material-ui/icons";
 import { Form, Formik } from "formik";
 import React from "react";
-import { Link as RouterLink, useHistory } from "react-router-dom";
 import * as yup from "yup";
-import { Alert } from "../../../components/Common/AlertMsgs";
-import { useLoginMutation } from "../../../generated/graphql";
+import { Link as RouterLink } from "react-router-dom";
+// import { useLoginMutation } from '../../../generated/graphql';
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -40,30 +39,16 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export const Login = (props: any) => {
+export const Register = (props: any) => {
 	const classes = useStyles();
-	const history = useHistory();
-	const [login] = useLoginMutation();
-	const [snackBarState, snackBarSetState] = React.useState<any>({
-		open: false,
-		errorMsg: "",
-	});
+	// const [login, {data, error}] = useLoginMutation()
 
-	const handleClose = () => {
-		snackBarSetState({ ...snackBarState, open: false });
-	};
+	// login({variables: {emailOrUserName: 'pasan', password: '1234'}})
+	// console.log(data)
+	// console.log(error)
 
-	const ErrorMsg = (
-		<Alert
-			vertical="bottom"
-			horizontal="center"
-			open={snackBarState.open}
-			handleClose={handleClose}
-			message={snackBarState.errorMsg}
-		/>
-	);
-
-	const loginValidationSchema = yup.object({
+	const registerValidationSchema = yup.object({
+		username: yup.string().required("Username is required"),
 		email: yup
 			.string()
 			.email("Enter a valid Email")
@@ -72,6 +57,8 @@ export const Login = (props: any) => {
 			.string()
 			.min(8, "Password should be of minimum 8 characters")
 			.required("Password is required"),
+		retypePassword: yup.string().required("Password is required"),
+		tos: yup.boolean().isTrue("I agree to the terms of service"),
 	});
 
 	return (
@@ -83,44 +70,23 @@ export const Login = (props: any) => {
 							<LockOutlined />
 						</Avatar>
 						<Typography component="h1" variant="h5">
-							Sign in
+							Sign up
 						</Typography>
 						<Formik
-							initialValues={{ email: "", password: "", rememberMe: false }}
-							validationSchema={loginValidationSchema}
+							initialValues={{
+								username: "",
+								email: "",
+								password: "",
+								retypePassword: "",
+								tos: false,
+							}}
+							validationSchema={registerValidationSchema}
 							onSubmit={(values, { setSubmitting }) => {
-								setSubmitting(false);
-								login({
-									variables: {
-										emailOrUserName: values.email,
-										password: values.password,
-									},
-								})
-									.then((response) => {
-										if (
-											response.data?.login.token &&
-											response.data.login.user
-										) {
-											localStorage.setItem(
-												"auth_token",
-												response.data.login.token
-													? response.data.login.token
-													: ""
-											);
-											history.push("/");
-										} else if (response.data?.login.errors) {
-											snackBarSetState({
-												open: true,
-												errorMsg: response.data.login.errors[0].message,
-											});
-										}
-									})
-									.catch((error) => {
-										snackBarSetState({
-											open: true,
-											errorMsg: "Internal server error",
-										});
-									});
+								setTimeout(() => {
+									alert(JSON.stringify(values, null, 2));
+
+									setSubmitting(false);
+								}, 400);
 							}}
 						>
 							{({
@@ -138,6 +104,20 @@ export const Login = (props: any) => {
 									noValidate
 									onSubmit={handleSubmit}
 								>
+									<TextField
+										error={touched.username && Boolean(errors.username)}
+										helperText={touched.username && errors.username}
+										value={values.username}
+										onChange={handleChange}
+										onBlur={handleBlur}
+										variant="outlined"
+										margin="normal"
+										required
+										fullWidth
+										id="username"
+										label="User name"
+										name="username"
+									/>
 									<TextField
 										error={touched.email && Boolean(errors.email)}
 										helperText={touched.email && errors.email}
@@ -169,16 +149,38 @@ export const Login = (props: any) => {
 										id="password"
 										autoComplete="current-password"
 									/>
+									<TextField
+										error={
+											touched.retypePassword && Boolean(errors.retypePassword)
+										}
+										onChange={handleChange}
+										onBlur={handleBlur}
+										value={values.retypePassword}
+										helperText={touched.retypePassword && errors.retypePassword}
+										variant="outlined"
+										margin="normal"
+										required
+										fullWidth
+										name="retypePassword"
+										label="Re enter Password"
+										type="password"
+										id="retypePassword"
+										autoComplete="current-password"
+									/>
 									<FormControlLabel
 										control={
 											<Checkbox
-												value="remember"
+												value="tos"
 												color="primary"
-												name="rememberMe"
+												name="tos"
 												onChange={handleChange}
 											/>
 										}
-										label="Remember me"
+										label={
+											touched.tos && Boolean(errors.tos)
+												? errors.tos
+												: "I agree to the terms of service"
+										}
 									/>
 									<Button
 										type="submit"
@@ -186,30 +188,27 @@ export const Login = (props: any) => {
 										variant="contained"
 										color="primary"
 										className={classes.submit}
-										disabled={isSubmitting}
+										disabled={
+											isSubmitting || (touched.tos && Boolean(errors.tos))
+										}
 									>
 										Sign In
 									</Button>
 									<Grid container>
-										<Grid item xs>
+										{/* <Grid item xs>
 											<Link href="#" variant="body2">
 												Forgot password?
 											</Link>
-										</Grid>
+										</Grid> */}
 										<Grid item>
-											<Link
-												component={RouterLink}
-												to="/register"
-												variant="body2"
-											>
-												{"Don't have an account? Sign Up"}
+											<Link component={RouterLink} to="/login" variant="body2">
+												{"Already have an account? Sign In"}
 											</Link>
 										</Grid>
 									</Grid>
 								</Form>
 							)}
 						</Formik>
-						{ErrorMsg}
 					</div>
 				</Container>
 			</Card>

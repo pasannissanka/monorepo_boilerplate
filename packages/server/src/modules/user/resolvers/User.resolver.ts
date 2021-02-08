@@ -48,16 +48,17 @@ export class UserResolver {
 				],
 			};
 		}
-		const token = jwt.sign(
+		const accessToken = jwt.sign(
 			{ id: user.id, email: user.email },
 			process.env.SECRET_KEY as string,
 			{
+				algorithm: "HS256",
 				expiresIn: "7d",
 			}
 		);
 		return {
 			user,
-			token,
+			token: accessToken,
 		};
 	}
 
