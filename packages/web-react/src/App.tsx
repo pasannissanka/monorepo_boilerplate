@@ -1,20 +1,18 @@
-import { Container, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Navbar } from "./components/Navbar/Navbar";
+import { NotFound404 } from "./components/Common/NotFound404";
 import { Login } from "./modules/auth/login/Login";
 import { Register } from "./modules/auth/register/Register";
+import { Dashboard } from "./modules/dashboard/Dashboard";
+import PrivateRoute from "./utils/PrivateRoute";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '100%',
-  },
-	main: {
-    marginTop: theme.spacing(8),
-    marginBottom: theme.spacing(2),
-  },
+		display: "flex",
+		flexDirection: "column",
+		minHeight: "100%",
+	}
 }));
 
 function App() {
@@ -22,29 +20,20 @@ function App() {
 	return (
 		<Router>
 			<div className={classes.root}>
-				<Navbar />
-				<Container maxWidth="md" className={classes.main}>
 					<Switch>
-						<Route exact path="/about">
-							<div>test 1</div>
-						</Route>
-						<Route exact path="/users">
-							<div>Users</div>
-						</Route>
 						<Route exact path="/login">
 							<Login />
 						</Route>
 						<Route exact path="/register">
 							<Register />
 						</Route>
-						<Route exact path="/">
-							<div>test</div>
-						</Route>
+						<PrivateRoute exact path="/">
+							<Dashboard />
+						</PrivateRoute>
 						<Route path="*">
-							<div>404 not found</div>
+							<NotFound404 />
 						</Route>
 					</Switch>
-				</Container>
 			</div>
 		</Router>
 	);
