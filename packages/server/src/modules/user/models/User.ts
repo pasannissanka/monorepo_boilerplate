@@ -1,12 +1,11 @@
 import { Field, ID, ObjectType } from "type-graphql";
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-// TODO Add validation, auth decorators
 @Entity()
 @ObjectType()
 export class User extends BaseEntity {
 	@Field(() => ID)
-	@PrimaryGeneratedColumn('uuid')
+	@PrimaryGeneratedColumn("uuid")
 	id: number;
 
 	@Field(() => String)
@@ -16,6 +15,17 @@ export class User extends BaseEntity {
 	@Field(() => String)
 	@Column({ unique: true })
 	email!: string;
+
+	@Field(() => String)
+	@Column()
+	firstName!: string;
+
+	@Field(() => String)
+	@Column()
+	lastName!: string;
+
+	@Column({ default: 0 })
+	count!: number;
 
 	@Column()
 	password!: string;

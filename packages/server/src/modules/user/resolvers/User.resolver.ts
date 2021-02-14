@@ -1,17 +1,19 @@
+import { ApolloError } from "apollo-server-express";
 import * as argon2 from "argon2";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { User } from "../models/User";
-import * as jwt from "jsonwebtoken";
+import { GenerateAuthTokens } from "../../../helpers/auth/auth_tokens";
 import { ContextType } from "../../common/types/Context.type";
+import { User } from "../models/User";
 import {
+	ChangePasswordInput,
 	LoginUserInput,
 	RegisterUserInput,
-	UserResponse,
+	UserResponse
 } from "../types/user.type";
-import { ApolloError } from "apollo-server-express";
 
 @Resolver()
 export class UserResolver {
+	@Authorized()
 	@Query(() => [User])
 	async getAllUsers(): Promise<Array<User>> {
 		return User.find();
@@ -19,18 +21,23 @@ export class UserResolver {
 
 	@Mutation(() => UserResponse)
 	async register(
-		@Arg("input") input: RegisterUserInput
+		@Arg("input") input: RegisterUserInput,
+		@Ctx() ctx: ContextType
 	): Promise<UserResponse> {
 		const hashedPassword = await argon2.hash(input.password);
 		const user = User.create({
 			username: input.username,
 			email: input.email,
 			password: hashedPassword,
+			firstName: input.firstName,
+			lastName: input.lastName,
 		});
+
 		try {
 			await user.save();
 		} catch (error) {
-			if (error.detail.includes("already exists")) {
+			console.log(error);
+			if (error.detail?.includes("already exists")) {
 				if (error.detail.includes("username")) {
 					throw new ApolloError("Username already taken");
 				} else {
@@ -39,22 +46,26 @@ export class UserResolver {
 			}
 			throw new ApolloError("Internal server error");
 		}
-		const accessToken = jwt.sign(
-			{ id: user.id, email: user.email },
-			process.env.SECRET_KEY as string,
-			{
-				algorithm: "HS256",
-				expiresIn: "7d",
-			}
-		);
+
+		const {accessToken, refreshToken} = GenerateAuthTokens(user);
+
+		ctx.res.cookie("refresh_token", refreshToken, {
+			expires: new Date(Date.now() + 86400000 * 7),
+		});
+		ctx.res.cookie("access_token", accessToken, {
+			expires: new Date(Date.now() + 3600000),
+		});
+
 		return {
 			user,
-			token: accessToken,
 		};
 	}
 
 	@Mutation(() => UserResponse)
-	async login(@Arg("input") input: LoginUserInput): Promise<UserResponse> {
+	async login(
+		@Arg("input") input: LoginUserInput,
+		@Ctx() ctx: ContextType
+	): Promise<UserResponse> {
 		const user = await User.findOne({
 			where: [
 				{ email: input.emailOrUserName },
@@ -68,17 +79,45 @@ export class UserResolver {
 		if (!isValid) {
 			throw new ApolloError("Invalid username or password");
 		}
-		const token = jwt.sign(
-			{ id: user.id, email: user.email },
-			process.env.SECRET_KEY as string,
-			{
-				expiresIn: "7d",
-			}
-		);
+
+		const {accessToken, refreshToken} = GenerateAuthTokens(user);
+
+		ctx.res.cookie("refresh_token", refreshToken, {
+			expires: new Date(Date.now() + 86400000 * 7),
+		});
+		ctx.res.cookie("access_token", accessToken, {
+			expires: new Date(Date.now() + 3600000),
+		});
+
 		return {
 			user,
-			token,
 		};
+	}
+
+	@Authorized()
+	@Mutation(() => String)
+	async changePasswordSelf(
+		@Ctx() ctx: ContextType,
+		@Arg("input") input: ChangePasswordInput
+	): Promise<any> {
+		const user = await User.findOne({ where: { email: ctx.user.email } });
+		if (!user) {
+			throw new ApolloError("User not found");
+		}
+
+		const isValid = await argon2.verify(user.password, input.oldPassword);
+		if (!isValid) {
+			throw new ApolloError("Invalid password");
+		}
+
+		const hashedPasswordNew = await argon2.hash(input.newPassword);
+		user.password = hashedPasswordNew;
+		try {
+			await User.update(user.id, user);
+		} catch (error) {
+			throw new ApolloError("Internal server error");
+		}
+		return "SUCCESS";
 	}
 
 	@Authorized()

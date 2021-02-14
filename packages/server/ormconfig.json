@@ -8,7 +8,6 @@
     "entities": [
         "./src/modules/**/models/**/*.ts"
     ],
-    "synchronize": true,
     "migrations": ["./src/migration/**/*.*"],
     "cli": {
       "migrationsDir": "src/migration"
