@@ -8,6 +8,7 @@ import {
 	RegisterUserInput,
 	UserResponse,
 } from "../types/user.type";
+import { ApolloError } from "apollo-server-express";
 
 @Resolver()
 export class UserResolver {
@@ -30,23 +31,13 @@ export class UserResolver {
 			await user.save();
 		} catch (error) {
 			if (error.detail.includes("already exists")) {
-				return {
-					errors: [
-						{
-							message: "username/email already exisits",
-							field: "username/email",
-						},
-					],
-				};
+				if (error.detail.includes("username")) {
+					throw new ApolloError("Username already taken");
+				} else {
+					throw new ApolloError("Email already exists");
+				}
 			}
-			return {
-				errors: [
-					{
-						message: "Registration error",
-						field: "",
-					},
-				],
-			};
+			throw new ApolloError("Internal server error");
 		}
 		const accessToken = jwt.sign(
 			{ id: user.id, email: user.email },
@@ -71,25 +62,11 @@ export class UserResolver {
 			],
 		});
 		if (!user) {
-			return {
-				errors: [
-					{
-						message: "user not found",
-						field: "email/username",
-					},
-				],
-			};
+			throw new ApolloError("Invalid username or password");
 		}
 		const isValid = await argon2.verify(user.password, input.password);
 		if (!isValid) {
-			return {
-				errors: [
-					{
-						message: "invalid login",
-						field: "password",
-					},
-				],
-			};
+			throw new ApolloError("Invalid username or password");
 		}
 		const token = jwt.sign(
 			{ id: user.id, email: user.email },
@@ -113,13 +90,6 @@ export class UserResolver {
 				user,
 			};
 		}
-		return {
-			errors: [
-				{
-					message: "invalid login",
-					field: "user",
-				},
-			],
-		};
+		throw new ApolloError("User not found");
 	}
 }

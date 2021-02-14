@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "dev": "set NODE_ENV=development && ts-node-dev --respawn --transpile-only ./src/server.ts",
     "start": "set NODE_ENV=development && tsc && nodemon ./dist/server.js"
@@ -31,5 +32,11 @@
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
     "typeorm": "^0.2.30"
+  },
+  "workspaces": {
+    "nohoist": [
+      "typeorm",
+      "typeorm/**"
+    ]
   }
 }

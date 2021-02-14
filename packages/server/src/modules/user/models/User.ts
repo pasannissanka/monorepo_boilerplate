@@ -6,8 +6,8 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 @ObjectType()
 export class User extends BaseEntity {
 	@Field(() => ID)
-	@PrimaryGeneratedColumn()
-	id: number | null = null;
+	@PrimaryGeneratedColumn('uuid')
+	id: number;
 
 	@Field(() => String)
 	@Column({ unique: true })

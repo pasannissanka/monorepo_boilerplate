@@ -1,4 +1,3 @@
-import { FieldError } from  "../../common/types/Error.types"
 import { Field, InputType, ObjectType } from "type-graphql";
 import { User } from "../models/User";
 
@@ -22,8 +21,6 @@ export class LoginUserInput {
 
 @ObjectType()
 export class UserResponse {
-	@Field(() => [FieldError], { nullable: true })
-	errors?: FieldError[];
 	@Field(() => User, { nullable: true })
 	user?: User;
 	@Field(() => String, { nullable: true })
