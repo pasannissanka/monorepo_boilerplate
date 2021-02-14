@@ -86,7 +86,6 @@ const main = async () => {
 				});
 				
 				(req as any).user = decoded;
-			console.log('test2')
 
 				return next();
 			} catch (error) {}
@@ -117,7 +116,6 @@ const main = async () => {
 			res.cookie("access_token", token.accessToken, {
 				expires: new Date(Date.now() + 3600000),
 			});
-			console.log('test');
 
 			(req as any).user = data;
 			return next();

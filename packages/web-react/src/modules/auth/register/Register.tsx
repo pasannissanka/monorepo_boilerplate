@@ -62,6 +62,8 @@ export const Register = (props: any) => {
 	);
 
 	const registerValidationSchema = yup.object({
+		firstName: yup.string().required("First name is required").max(30),
+		lastName: yup.string().required("Last name is required").max(30),
 		username: yup.string().required("Username is required"),
 		email: yup
 			.string()
@@ -69,7 +71,7 @@ export const Register = (props: any) => {
 			.required("Email is required"),
 		password: yup
 			.string()
-			.min(8, "Password should be of minimum 8 characters")
+			.min(6, "Password should be of minimum 6 characters")
 			.required("Password is required"),
 		retypePassword: yup.string().required("Password is required"),
 	});
@@ -82,7 +84,7 @@ export const Register = (props: any) => {
 			justify="center"
 			direction="column"
 		>
-			<Grid item style={{ textAlign: "center" }}>
+			<Grid item style={{ textAlign: "start" }}>
 				<Card variant="elevation" style={{ width: "100%" }}>
 					<Container component="main" maxWidth="xs">
 						<div className={classes.paper}>
@@ -98,6 +100,8 @@ export const Register = (props: any) => {
 									email: "",
 									password: "",
 									retypePassword: "",
+									firstName: "",
+									lastName: "",
 								}}
 								validationSchema={registerValidationSchema}
 								onSubmit={(values, { setSubmitting }) => {
@@ -106,24 +110,17 @@ export const Register = (props: any) => {
 											email: values.email,
 											password: values.password,
 											username: values.username,
+											firstName: values.firstName,
+											lastName: values.lastName,
 										},
 									})
 										.then((response) => {
-											if (
-												response.data?.register.token &&
-												response.data?.register.user
-											) {
-												localStorage.setItem(
-													"auth_token",
-													response.data.register.token
-														? response.data.register.token
-														: ""
-												);
+											if (response.data?.register.user) {
 												history.push("/");
-											} else if (response.data?.register.errors) {
+											} else if (response.errors) {
 												snackBarSetState({
 													open: true,
-													errorMsg: response.data.register.errors[0].message,
+													errorMsg: response.errors[0].message,
 												});
 											}
 										})
@@ -150,6 +147,40 @@ export const Register = (props: any) => {
 										noValidate
 										onSubmit={handleSubmit}
 									>
+										<Grid container spacing={1}>
+											<Grid item xs={6}>
+												<TextField
+													error={touched.firstName && Boolean(errors.firstName)}
+													helperText={touched.firstName && errors.firstName}
+													value={values.firstName}
+													onChange={handleChange}
+													onBlur={handleBlur}
+													variant="outlined"
+													margin="normal"
+													required
+													fullWidth
+													id="firstName"
+													label="First name"
+													name="firstName"
+												/>
+											</Grid>
+											<Grid item xs={6}>
+												<TextField
+													error={touched.lastName && Boolean(errors.lastName)}
+													helperText={touched.lastName && errors.lastName}
+													value={values.lastName}
+													onChange={handleChange}
+													onBlur={handleBlur}
+													variant="outlined"
+													margin="normal"
+													required
+													fullWidth
+													id="lastName"
+													label="Last name"
+													name="lastName"
+												/>
+											</Grid>
+										</Grid>
 										<TextField
 											error={touched.username && Boolean(errors.username)}
 											helperText={touched.username && errors.username}

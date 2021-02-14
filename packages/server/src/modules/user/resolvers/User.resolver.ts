@@ -8,7 +8,7 @@ import {
 	ChangePasswordInput,
 	LoginUserInput,
 	RegisterUserInput,
-	UserResponse
+	UserResponse,
 } from "../types/user.type";
 
 @Resolver()
@@ -47,7 +47,7 @@ export class UserResolver {
 			throw new ApolloError("Internal server error");
 		}
 
-		const {accessToken, refreshToken} = GenerateAuthTokens(user);
+		const { accessToken, refreshToken } = GenerateAuthTokens(user);
 
 		ctx.res.cookie("refresh_token", refreshToken, {
 			expires: new Date(Date.now() + 86400000 * 7),
@@ -80,7 +80,7 @@ export class UserResolver {
 			throw new ApolloError("Invalid username or password");
 		}
 
-		const {accessToken, refreshToken} = GenerateAuthTokens(user);
+		const { accessToken, refreshToken } = GenerateAuthTokens(user);
 
 		ctx.res.cookie("refresh_token", refreshToken, {
 			expires: new Date(Date.now() + 86400000 * 7),
@@ -92,6 +92,24 @@ export class UserResolver {
 		return {
 			user,
 		};
+	}
+
+	@Authorized()
+	@Mutation(() => String)
+	async logout(@Ctx() ctx: ContextType): Promise<any> {
+		const user = await User.findOne({ where: { email: ctx.user.email } });
+		if (!user) {
+			throw new ApolloError("User not found");
+		}
+		user.count += 1;
+		try {
+			await User.update(user.id, user);
+		} catch (error) {
+			throw new ApolloError("Internal server error");
+		}
+		ctx.res.clearCookie("refresh_token");
+		ctx.res.clearCookie("access_token");
+		return "SUCCESS";
 	}
 
 	@Authorized()

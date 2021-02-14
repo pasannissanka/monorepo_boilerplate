@@ -1,6 +1,7 @@
 import {
 	AppBar,
 	Badge,
+	Button,
 	CssBaseline,
 	Divider,
 	Drawer,
@@ -16,24 +17,23 @@ import {
 	MenuItem,
 	Toolbar,
 	Typography,
-	useTheme
 } from "@material-ui/core";
 import {
 	AccountCircle,
-	ChevronLeft,
-	ChevronRight,
-	Close,
-
+	Dashboard,
+	FormatListBulleted,
 	Inbox,
 	Mail,
 	Menu as MenuIcon,
-	More,
+	MenuOpen,
+	MoreVert,
 	Notifications,
-	Search
+	Search,
 } from "@material-ui/icons/";
 import clsx from "clsx";
 import React from "react";
 import { Link } from "react-router-dom";
+import { useLogoutMutation } from "../../generated/graphql";
 
 interface Props {
 	window?: () => Window;
@@ -54,19 +54,19 @@ const useStyles = makeStyles((theme) => ({
 			duration: theme.transitions.duration.leavingScreen,
 		}),
 	},
-	appBarShift: {
-		marginLeft: drawerWidth,
-		width: `calc(100% - ${drawerWidth}px)`,
-		transition: theme.transitions.create(["width", "margin"], {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
-	},
 	menuButton: {
 		marginRight: theme.spacing(2),
 	},
 	title: {
+		// flexGrow: 1,
+		display: "none",
+		[theme.breakpoints.up("sm")]: {
+			display: "block",
+		},
+	},
+	navButtons: {
 		flexGrow: 1,
+		marginLeft: theme.spacing(5),
 		display: "none",
 		[theme.breakpoints.up("sm")]: {
 			display: "block",
@@ -119,13 +119,6 @@ const useStyles = makeStyles((theme) => ({
 		width: drawerWidth,
 		flexShrink: 0,
 	},
-	drawerPaper: {
-		width: drawerWidth,
-	},
-	drawerContainer: {
-		marginTop: 60,
-		overflow: "auto",
-	},
 	drawerOpen: {
 		width: drawerWidth,
 		transition: theme.transitions.create("width", {
@@ -141,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
 		overflowX: "hidden",
 		width: theme.spacing(7) + 1,
 		[theme.breakpoints.up("sm")]: {
-			width: theme.spacing(9) + 1,
+			width: theme.spacing(8) + 1,
 		},
 	},
 	sectionDesktop: {
@@ -172,13 +165,14 @@ const useStyles = makeStyles((theme) => ({
 
 export const Navbar = (props: Props) => {
 	const classes = useStyles();
-	const theme = useTheme();
+	// const theme = useTheme();
 	const [drawerToggle, setdrawerToggle] = React.useState(false);
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const [
 		mobileMoreAnchorEl,
 		setMobileMoreAnchorEl,
 	] = React.useState<null | HTMLElement>(null);
+	const [logout] = useLogoutMutation();
 
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -202,8 +196,12 @@ export const Navbar = (props: Props) => {
 		setAnchorEl(null);
 		handleMobileMenuClose();
 	};
-	const handleLogOut = () => {
-		localStorage.removeItem("auth_token");
+	const handleLogOut = async () => {
+		try {
+			await logout();
+		} catch (error) {
+			console.log(error);
+		}
 		handleMenuClose();
 	};
 
@@ -271,27 +269,46 @@ export const Navbar = (props: Props) => {
 		<React.Fragment>
 			<div className={classes.root}>
 				<CssBaseline />
-				<AppBar
-					position="fixed"
-					className={clsx(classes.appBar, {
-						[classes.appBarShift]: drawerToggle,
-					})}
-				>
+				<AppBar position="fixed" className={clsx(classes.appBar)}>
 					<Toolbar>
 						<IconButton
 							color="inherit"
 							aria-label="open drawer"
 							onClick={handleDrawerToggle}
 							edge="start"
-							className={clsx(classes.menuButton, {
-								[classes.hide]: drawerToggle,
-							})}
+							className={clsx(classes.menuButton)}
 						>
-							{!drawerToggle ? <MenuIcon /> : <Close />}
+							{!drawerToggle ? <MenuIcon /> : <MenuOpen />}
 						</IconButton>
 						<Typography className={classes.title} variant="h6" noWrap>
 							Material-UI
 						</Typography>
+						<div className={classes.navButtons}>
+							<Button
+								size="small"
+								style={{ marginRight: 10 }}
+								color="inherit"
+								startIcon={<Dashboard />}
+							>
+								Dashboard
+							</Button>
+							<Button
+								size="small"
+								style={{ marginRight: 10 }}
+								color="inherit"
+								startIcon={<FormatListBulleted />}
+							>
+								Data
+							</Button>
+							<Button
+								size="small"
+								style={{ marginRight: 10 }}
+								color="inherit"
+								startIcon={<Dashboard />}
+							>
+								Activity
+							</Button>
+						</div>
 						<div className={classes.search}>
 							<div className={classes.searchIcon}>
 								<Search />
@@ -335,7 +352,7 @@ export const Navbar = (props: Props) => {
 								onClick={handleMobileMenuOpen}
 								color="inherit"
 							>
-								<More />
+								<MoreVert />
 							</IconButton>
 						</div>
 					</Toolbar>
@@ -355,11 +372,7 @@ export const Navbar = (props: Props) => {
 						}),
 					}}
 				>
-					<div className={classes.toolbar}>
-						<IconButton onClick={handleDrawerToggle}>
-							{theme.direction === "rtl" ? <ChevronRight /> : <ChevronLeft />}
-						</IconButton>
-					</div>
+					<div className={classes.toolbar}></div>
 					<Divider />
 					<List>
 						{["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
@@ -367,7 +380,7 @@ export const Navbar = (props: Props) => {
 								<ListItemIcon>
 									{index % 2 === 0 ? <Inbox /> : <Mail />}
 								</ListItemIcon>
-								<ListItemText primary={text} />
+								{drawerToggle ? <ListItemText primary={text} /> : <></>}
 							</ListItem>
 						))}
 					</List>
@@ -378,7 +391,7 @@ export const Navbar = (props: Props) => {
 								<ListItemIcon>
 									{index % 2 === 0 ? <Inbox /> : <Mail />}
 								</ListItemIcon>
-								<ListItemText primary={text} />
+								{drawerToggle ? <ListItemText primary={text} /> : <></>}
 							</ListItem>
 						))}
 					</List>

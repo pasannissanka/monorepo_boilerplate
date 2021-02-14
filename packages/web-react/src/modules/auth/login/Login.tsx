@@ -77,7 +77,7 @@ export const Login = (props: any) => {
 			.required("Email is required"),
 		password: yup
 			.string()
-			.min(8, "Password should be of minimum 8 characters")
+			.min(6, "Password should be of minimum 6 characters")
 			.required("Password is required"),
 	});
 
@@ -89,7 +89,7 @@ export const Login = (props: any) => {
 			justify="center"
 			direction="column"
 		>
-			<Grid item style={{textAlign: "center"}}>
+			<Grid item style={{ textAlign: "start" }}>
 				<Card variant="elevation" style={{ width: "100%" }}>
 					<Container component="main" maxWidth="xs">
 						<div className={classes.paper}>
@@ -111,21 +111,12 @@ export const Login = (props: any) => {
 										},
 									})
 										.then((response) => {
-											if (
-												response.data?.login.token &&
-												response.data.login.user
-											) {
-												localStorage.setItem(
-													"auth_token",
-													response.data.login.token
-														? response.data.login.token
-														: ""
-												);
+											if (response.data) {
 												history.push("/");
-											} else if (response.data?.login.errors) {
+											} else if (response.errors) {
 												snackBarSetState({
 													open: true,
-													errorMsg: response.data.login.errors[0].message,
+													errorMsg: response.errors[0].message,
 												});
 											}
 										})

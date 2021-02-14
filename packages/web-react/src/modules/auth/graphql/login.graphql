@@ -4,26 +4,24 @@ mutation login($emailOrUserName: String!, $password: String!) {
 			id
 			username
 			email
+			firstName
+			lastName
 		}
-		errors {
-			message
-			field
-		}
-		token
 	}
 }
 
-mutation register($username: String!, $email: String!, $password: String!) {
-	register(input: { username: $username, email: $email, password: $password }) {
-		errors {
-			message
-			field
-		}
+mutation register($username: String!, $email: String!, $password: String!, $firstName: String!, $lastName: String!) {
+	register(input: { username: $username, email: $email, password: $password, firstName: $firstName, lastName: $lastName }) {
 		user {
 			id
 			username
 			email
+			firstName
+			lastName
 		}
-		token
 	}
+}
+
+mutation logout {
+	logout
 }
