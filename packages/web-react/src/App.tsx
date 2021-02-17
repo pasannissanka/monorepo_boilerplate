@@ -9,21 +9,21 @@ import PrivateRoute from "./utils/PrivateRoute";
 function App() {
 	return (
 		<Router>
-			<div className="h-100">
-					<Switch>
-						<Route exact path="/login">
-							<Login />
-						</Route>
-						<Route exact path="/register">
-							<Register />
-						</Route>
-						<PrivateRoute exact path="/">
-							<Dashboard />
-						</PrivateRoute>
-						<Route path="*">
-							<NotFound404 />
-						</Route>
-					</Switch>
+			<div>
+				<Switch>
+					<Route exact path="/login">
+						<Login />
+					</Route>
+					<Route exact path="/register">
+						<Register />
+					</Route>
+					<PrivateRoute exact path="/">
+						<Dashboard />
+					</PrivateRoute>
+					<Route path="*">
+						<NotFound404 />
+					</Route>
+				</Switch>
 			</div>
 		</Router>
 	);
