@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.3.7",
+    "@craco/craco": "^6.1.1",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@testing-library/jest-dom": "^5.11.4",
@@ -27,9 +28,12 @@
     "yup": "^0.32.8"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start1": "react-scripts start",
+    "build1": "react-scripts build",
+    "test1": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
     "gen": "graphql-codegen --config codegen.yml"
   },
@@ -56,9 +60,13 @@
     "@graphql-codegen/typescript": "1.20.2",
     "@graphql-codegen/typescript-operations": "1.17.14",
     "@graphql-codegen/typescript-react-apollo": "2.2.1",
+    "@tailwindcss/postcss7-compat": "^2.0.3",
     "@types/graphql": "^14.5.0",
     "@types/js-cookie": "^2.2.6",
     "@types/react-router-dom": "^5.1.7",
-    "@types/styled-components": "^5.1.7"
+    "@types/styled-components": "^5.1.7",
+    "autoprefixer": "^9",
+    "postcss": "^7",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   }
 }

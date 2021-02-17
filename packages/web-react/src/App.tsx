@@ -1,4 +1,3 @@
-import { makeStyles } from "@material-ui/core";
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { NotFound404 } from "./components/Common/NotFound404";
@@ -7,19 +6,10 @@ import { Register } from "./modules/auth/register/Register";
 import { Dashboard } from "./modules/dashboard/Dashboard";
 import PrivateRoute from "./utils/PrivateRoute";
 
-const useStyles = makeStyles((theme) => ({
-	root: {
-		display: "flex",
-		flexDirection: "column",
-		minHeight: "100%",
-	}
-}));
-
 function App() {
-	const classes = useStyles();
 	return (
 		<Router>
-			<div className={classes.root}>
+			<div className="h-100">
 					<Switch>
 						<Route exact path="/login">
 							<Login />

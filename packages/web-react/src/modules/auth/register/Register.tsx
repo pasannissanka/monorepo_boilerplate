@@ -1,65 +1,12 @@
-import {
-	Avatar,
-	Button,
-	Card,
-	Container,
-	Grid,
-	Link,
-	makeStyles,
-	TextField,
-	Typography,
-} from "@material-ui/core";
-import { LockOutlined } from "@material-ui/icons";
-import { Form, Formik } from "formik";
+import { ErrorMessage, Field, Formik } from "formik";
 import React from "react";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import * as yup from "yup";
-import { Alert } from "../../../components/Common/AlertMsgs";
 import { useRegisterMutation } from "../../../generated/graphql";
 
-const useStyles = makeStyles((theme) => ({
-	paper: {
-		marginTop: theme.spacing(8),
-		marginBottom: theme.spacing(8),
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
-	},
-	avatar: {
-		margin: theme.spacing(1),
-		backgroundColor: theme.palette.secondary.main,
-	},
-	form: {
-		width: "100%", // Fix IE 11 issue.
-		marginTop: theme.spacing(1),
-	},
-	submit: {
-		margin: theme.spacing(3, 0, 2),
-	},
-}));
-
 export const Register = (props: any) => {
-	const classes = useStyles();
 	const history = useHistory();
 	const [register] = useRegisterMutation();
-	const [snackBarState, snackBarSetState] = React.useState<any>({
-		open: false,
-		errorMsg: "",
-	});
-
-	const handleClose = () => {
-		snackBarSetState({ ...snackBarState, open: false });
-	};
-
-	const ErrorMsg = (
-		<Alert
-			vertical="bottom"
-			horizontal="center"
-			open={snackBarState.open}
-			handleClose={handleClose}
-			message={snackBarState.errorMsg}
-		/>
-	);
 
 	const registerValidationSchema = yup.object({
 		firstName: yup.string().required("First name is required").max(30),
@@ -73,217 +20,187 @@ export const Register = (props: any) => {
 			.string()
 			.min(6, "Password should be of minimum 6 characters")
 			.required("Password is required"),
-		retypePassword: yup.string().required("Password is required"),
 	});
 
 	return (
-		<Grid
-			container
-			spacing={0}
-			alignContent="center"
-			justify="center"
-			direction="column"
-		>
-			<Grid item style={{ textAlign: "start" }}>
-				<Card variant="elevation" style={{ width: "100%" }}>
-					<Container component="main" maxWidth="xs">
-						<div className={classes.paper}>
-							<Avatar className={classes.avatar}>
-								<LockOutlined />
-							</Avatar>
-							<Typography component="h1" variant="h5">
-								Sign up
-							</Typography>
-							<Formik
-								initialValues={{
-									username: "",
-									email: "",
-									password: "",
-									retypePassword: "",
-									firstName: "",
-									lastName: "",
-								}}
-								validationSchema={registerValidationSchema}
-								onSubmit={(values, { setSubmitting }) => {
-									register({
-										variables: {
-											email: values.email,
-											password: values.password,
-											username: values.username,
-											firstName: values.firstName,
-											lastName: values.lastName,
-										},
-									})
-										.then((response) => {
-											if (response.data?.register.user) {
-												history.push("/");
-											} else if (response.errors) {
-												snackBarSetState({
-													open: true,
-													errorMsg: response.errors[0].message,
-												});
-											}
-										})
-										.catch((err) => {
-											snackBarSetState({
-												open: true,
-												errorMsg: "Internal server error",
-											});
-										});
-								}}
-							>
-								{({
-									values,
-									errors,
-									touched,
-									handleChange,
-									handleBlur,
-									handleSubmit,
-									isSubmitting,
-									/* and other goodies */
-								}) => (
-									<Form
-										className={classes.form}
-										noValidate
-										onSubmit={handleSubmit}
-									>
-										<Grid container spacing={1}>
-											<Grid item xs={6}>
-												<TextField
-													error={touched.firstName && Boolean(errors.firstName)}
-													helperText={touched.firstName && errors.firstName}
-													value={values.firstName}
-													onChange={handleChange}
-													onBlur={handleBlur}
-													variant="outlined"
-													margin="normal"
-													required
-													fullWidth
-													id="firstName"
-													label="First name"
-													name="firstName"
-												/>
-											</Grid>
-											<Grid item xs={6}>
-												<TextField
-													error={touched.lastName && Boolean(errors.lastName)}
-													helperText={touched.lastName && errors.lastName}
-													value={values.lastName}
-													onChange={handleChange}
-													onBlur={handleBlur}
-													variant="outlined"
-													margin="normal"
-													required
-													fullWidth
-													id="lastName"
-													label="Last name"
-													name="lastName"
-												/>
-											</Grid>
-										</Grid>
-										<TextField
-											error={touched.username && Boolean(errors.username)}
-											helperText={touched.username && errors.username}
-											value={values.username}
-											onChange={handleChange}
-											onBlur={handleBlur}
-											variant="outlined"
-											margin="normal"
-											required
-											fullWidth
-											id="username"
-											label="User name"
-											name="username"
-										/>
-										<TextField
-											error={touched.email && Boolean(errors.email)}
-											helperText={touched.email && errors.email}
-											value={values.email}
-											onChange={handleChange}
-											onBlur={handleBlur}
-											variant="outlined"
-											margin="normal"
-											required
-											fullWidth
-											id="email"
-											label="Email Address"
-											name="email"
-											autoComplete="email"
-										/>
-										<TextField
-											error={touched.password && Boolean(errors.password)}
-											onChange={handleChange}
-											onBlur={handleBlur}
-											value={values.password}
-											helperText={touched.password && errors.password}
-											variant="outlined"
-											margin="normal"
-											required
-											fullWidth
-											name="password"
-											label="Password"
-											type="password"
-											id="password"
-											autoComplete="current-password"
-										/>
-										<TextField
-											error={
-												touched.retypePassword && Boolean(errors.retypePassword)
-											}
-											onChange={handleChange}
-											onBlur={handleBlur}
-											value={values.retypePassword}
-											helperText={
-												touched.retypePassword && errors.retypePassword
-											}
-											variant="outlined"
-											margin="normal"
-											required
-											fullWidth
-											name="retypePassword"
-											label="Re enter Password"
-											type="password"
-											id="retypePassword"
-											autoComplete="current-password"
-										/>
-										<Typography variant="body1">
-											By clicking Sign Up, you agree to our Terms and that you
-											have read our Privacy Policy
-										</Typography>
-										<Button
-											type="submit"
-											fullWidth
-											variant="contained"
-											color="primary"
-											className={classes.submit}
-											disabled={isSubmitting}
-										>
-											Sign Up
-										</Button>
-										<Grid container>
-											{/* <Grid item xs>
-											<Link href="#" variant="body2">
-												Forgot password?
-											</Link>
-										</Grid> */}
-											<Grid item>
-												<Link
-													component={RouterLink}
-													to="/login"
-													variant="body2"
-												>
-													{"Already have an account? Sign In"}
-												</Link>
-											</Grid>
-										</Grid>
-									</Form>
-								)}
-							</Formik>
-							{ErrorMsg}
+		<React.Fragment>
+			<div className="flex flex-col h-screen bg-gray-100">
+				<div className="grid place-items-center mx-2 my-20 sm:my-auto">
+					<div className="container mx-auto max-w-md w-full">
+						<div>
+							<img
+								className="mx-auto h-12 w-auto"
+								src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+								alt="Workflow"
+							/>
+							<h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+								Register
+							</h2>
 						</div>
-					</Container>
-				</Card>
-			</Grid>
-		</Grid>
+						<Formik
+							initialValues={{
+								username: "",
+								email: "",
+								password: "",
+								firstName: "",
+								lastName: "",
+							}}
+							validationSchema={registerValidationSchema}
+							onSubmit={(values, { setSubmitting }) => {
+								setSubmitting(true);
+								register({
+									variables: {
+										email: values.email,
+										password: values.password,
+										username: values.username,
+										firstName: values.firstName,
+										lastName: values.lastName,
+									},
+								})
+									.then((response) => {
+										setSubmitting(false);
+										if (response.data?.register.user) {
+											history.push("/");
+										} else if (response.errors) {
+										}
+									})
+									.catch((err) => {
+										setSubmitting(false);
+									});
+							}}
+						>
+							{({
+								handleSubmit,
+								isSubmitting,
+								/* and other goodies */
+							}) => (
+								<form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+									<div className="rounded-md shadow-sm ">
+										<div>
+											<Field
+												className={`appearance-none rounded-md relative block w-full my-2
+													px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900
+													focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+												name="firstName"
+												type="text"
+												placeholder="First Name"
+											/>
+											<ErrorMessage name="firstName" />
+										</div>
+										<div>
+											<Field
+												className={`appearance-none rounded-md relative block w-full my-2
+													px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900
+													focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+												name="lastName"
+												type="text"
+												placeholder="Last Name"
+											/>
+											<ErrorMessage name="lastName" />
+										</div>
+										<div>
+											<Field
+												className={`appearance-none rounded-md relative block w-full my-2
+													px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900
+													focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+												name="username"
+												type="text"
+												placeholder="User Name"
+											/>
+											<ErrorMessage name="username" />
+										</div>
+										<div>
+											<Field
+												className={`appearance-none rounded-md relative block w-full my-2
+													px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 
+													focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+												name="email"
+												type="email"
+												placeholder="Email"
+											/>
+											<ErrorMessage name="email" />
+										</div>
+										<div>
+											<Field
+												className={`appearance-none rounded-md relative block w-full px-3 py-2 my-2
+													border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none 
+													focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
+												name="password"
+												type="password"
+												placeholder="Password"
+											/>
+											<ErrorMessage name="password" />
+										</div>
+									</div>
+
+									<div>
+										<button
+											type="submit"
+											className={`group relative w-full flex justify-center py-2 px-4 border 
+											border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 
+											hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+										>
+											{!isSubmitting ? (
+												<span className="absolute left-0 inset-y-0 flex items-center pl-3">
+													<svg
+														className="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+														xmlns="http://www.w3.org/2000/svg"
+														viewBox="0 0 20 20"
+														fill="currentColor"
+														aria-hidden="true"
+													>
+														<path
+															fillRule="evenodd"
+															d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+															clipRule="evenodd"
+														/>
+													</svg>
+												</span>
+											) : (
+												<span className="absolute left-0 inset-y-0 flex items-center pl-3">
+													<svg
+														className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+														xmlns="http://www.w3.org/2000/svg"
+														fill="none"
+														viewBox="0 0 24 24"
+													>
+														<circle
+															className="opacity-25"
+															cx="12"
+															cy="12"
+															r="10"
+															stroke="currentColor"
+															strokeWidth="4"
+														></circle>
+														<path
+															className="opacity-75"
+															fill="currentColor"
+															d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+														></path>
+													</svg>
+												</span>
+											)}
+											Sign Up
+										</button>
+									</div>
+									<div>
+										<div className="flex items-center justify-end">
+											<div className="text-sm">
+												<RouterLink
+													to="/login"
+													className="font-medium text-indigo-600 hover:text-indigo-500"
+												>
+													Already have an account? Sign In
+												</RouterLink>
+											</div>
+										</div>
+									</div>
+								</form>
+							)}
+						</Formik>
+					</div>
+				</div>
+			</div>
+		</React.Fragment>
 	);
 };

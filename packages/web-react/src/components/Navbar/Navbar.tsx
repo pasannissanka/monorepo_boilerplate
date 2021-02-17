@@ -20,6 +20,7 @@ import {
 } from "@material-ui/core";
 import {
 	AccountCircle,
+	ArrowDropDown,
 	Dashboard,
 	FormatListBulleted,
 	Inbox,
@@ -33,7 +34,8 @@ import {
 import clsx from "clsx";
 import React from "react";
 import { Link } from "react-router-dom";
-import { useLogoutMutation } from "../../generated/graphql";
+import { MeDocument, useLogoutMutation } from "../../generated/graphql";
+import { client } from "../../lib/init-apollo";
 
 interface Props {
 	window?: () => Window;
@@ -165,7 +167,6 @@ const useStyles = makeStyles((theme) => ({
 
 export const Navbar = (props: Props) => {
 	const classes = useStyles();
-	// const theme = useTheme();
 	const [drawerToggle, setdrawerToggle] = React.useState(false);
 	const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 	const [
@@ -174,6 +175,10 @@ export const Navbar = (props: Props) => {
 	] = React.useState<null | HTMLElement>(null);
 	const [logout] = useLogoutMutation();
 
+	const me = client.readQuery({
+		query: MeDocument,
+	});
+	
 	const isMenuOpen = Boolean(anchorEl);
 	const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -260,7 +265,7 @@ export const Navbar = (props: Props) => {
 				>
 					<AccountCircle />
 				</IconButton>
-				<p>Profile</p>
+				<p>{}</p>
 			</MenuItem>
 		</Menu>
 	);
@@ -323,7 +328,7 @@ export const Navbar = (props: Props) => {
 							/>
 						</div>
 						<div className={classes.sectionDesktop}>
-							<IconButton aria-label="show new mails" color="inherit">
+							{/* <IconButton aria-label="show new mails" color="inherit">
 								<Badge badgeContent={msgCount} color="secondary">
 									<Mail />
 								</Badge>
@@ -332,17 +337,19 @@ export const Navbar = (props: Props) => {
 								<Badge badgeContent={notificationCount} color="secondary">
 									<Notifications />
 								</Badge>
-							</IconButton>
-							<IconButton
-								edge="end"
+							</IconButton> */}
+							<Button
 								aria-label="account of current user"
 								aria-controls={menuId}
 								aria-haspopup="true"
 								onClick={handleProfileMenuOpen}
 								color="inherit"
+								size="medium"
+								startIcon={<AccountCircle />}
+								endIcon={<ArrowDropDown />}
 							>
-								<AccountCircle />
-							</IconButton>
+								{me?.me.user.username}
+							</Button>
 						</div>
 						<div className={classes.sectionMobile}>
 							<IconButton

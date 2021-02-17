@@ -2,8 +2,8 @@
     "type": "postgres",
     "host": "localhost",
     "port": 5432,
-    "username": "postgres",
-    "password": "postgres",
+    "username": "pasannissanka",
+    "password": "1234",
     "database": "gql_auth_test",
     "entities": [
         "./src/modules/**/models/**/*.ts"
