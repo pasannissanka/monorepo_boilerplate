@@ -1,19 +1,51 @@
 import React from "react";
+import { IDropDownState } from "../../modules/dashboard/Dashboard";
+import ProfileDropdown from "./Menus/ProfileDropdown";
 
-interface AppBarProps {}
+export interface AppBarProps {
+	isDrawerOpen: boolean;
+	handleDrawerOpen: () => void;
+	dropdownMenuState: IDropDownState;
+	setdropdownMenuState: React.Dispatch<React.SetStateAction<IDropDownState>>;
+}
 
-export default function AppBar(props: AppBarProps) {
+export default function AppBar({
+	handleDrawerOpen,
+	isDrawerOpen,
+	dropdownMenuState,
+	setdropdownMenuState,
+}: AppBarProps) {
+	const handleProfileMenu = () => {
+		setdropdownMenuState({
+			...dropdownMenuState,
+			profile: !dropdownMenuState.profile,
+		});
+	};
+	const handleMobileSearchMenu = () => {
+		setdropdownMenuState({
+			...dropdownMenuState,
+			mobileSearchPanel: !dropdownMenuState.mobileSearchPanel,
+		});
+	};
+
 	return (
 		<React.Fragment>
-			<header className="flex-shrink-0 border-b">
+			<header className="flex-shrink-0 border-b bg-white">
 				<div className="flex items-center justify-between p-2">
 					<div className="flex items-center space-x-3">
 						<span className="p-2 text-xl font-semibold tracking-wider uppercase lg:hidden">
-							K-WD
+							SolvedCard
 						</span>
-						<button className="p-2 rounded-md focus:outline-none focus:ring">
+						<button
+							onClick={handleDrawerOpen}
+							className="p-2 rounded-md focus:outline-none focus:ring"
+						>
 							<svg
-								className="w-4 h-4 text-gray-600"
+								className={`w-4 h-4 text-gray-600 ${
+									!isDrawerOpen
+										? "transform transition-transform -rotate-180"
+										: ""
+								}`}
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"
@@ -29,49 +61,60 @@ export default function AppBar(props: AppBarProps) {
 						</button>
 					</div>
 
-					{/* <div
-              className="fixed inset-0 z-10 bg-black bg-opacity-20"
-              // style="backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px)"
-            >
-              <div
-                className="absolute inset-x-0 flex items-center justify-between p-2 bg-white shadow-md"
-              >
-                <div className="flex items-center flex-1 px-2 space-x-2">
-                  <span>
-                    <svg
-                      className="w-6 h-6 text-gray-500"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </span>
-                  <input
-                    type="text"
-                    placeholder="Search"
-                    className="w-full px-4 py-3 text-gray-600 rounded-md focus:bg-gray-100 focus:outline-none"
-                  />
-                </div>
-                <button className="flex-shrink-0 p-4 rounded-md">
-                  <svg
-                    className="w-4 h-4 text-gray-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-            </div> */}
+					{/* Mobile view Search bar */}
+					{dropdownMenuState.mobileSearchPanel ? (
+						<div
+							className="fixed inset-0 z-10 bg-black bg-opacity-20"
+							style={{backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)'}}
+						>
+							<div className="absolute inset-x-0 flex items-center justify-between p-2 bg-white shadow-md">
+								<div className="flex items-center flex-1 px-2 space-x-2">
+									<span>
+										<svg
+											className="w-6 h-6 text-gray-500"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+										>
+											<path
+												strokeLinecap="round"
+												strokeLinejoin="round"
+												strokeWidth="2"
+												d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+											/>
+										</svg>
+									</span>
+									<input
+										type="text"
+										placeholder="Search"
+										className="w-full px-4 py-3 text-gray-600 rounded-md focus:bg-gray-100 focus:outline-none"
+									/>
+								</div>
+								<button
+									className="flex-shrink-0 p-4 rounded-md"
+									onClick={handleMobileSearchMenu}
+								>
+									<svg
+										className="w-4 h-4 text-gray-500"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
+											d="M6 18L18 6M6 6l12 12"
+										/>
+									</svg>
+								</button>
+							</div>
+						</div>
+					) : (
+						<></>
+					)}
 
 					<div className="items-center hidden px-2 space-x-2 md:flex-1 md:flex md:mr-auto md:ml-5">
 						<span>
@@ -97,9 +140,12 @@ export default function AppBar(props: AppBarProps) {
 						/>
 					</div>
 
-					{/* <!-- Navbar right --> */}
+					{/* <!-- Mobile search   --> */}
 					<div className="relative flex items-center space-x-3">
-						<button className="p-2 bg-gray-100 rounded-full md:hidden focus:outline-none focus:ring hover:bg-gray-200">
+						<button
+							className="p-2 bg-gray-100 rounded-full md:hidden focus:outline-none focus:ring hover:bg-gray-200"
+							onClick={handleMobileSearchMenu}
+						>
 							<svg
 								className="w-6 h-6 text-gray-500"
 								xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +164,7 @@ export default function AppBar(props: AppBarProps) {
 
 						<div className="items-center hidden space-x-3 md:flex">
 							{/* <!-- Notification Button --> */}
-							<div className="relative" x-data="{ isOpen: false }">
+							<div className="relative">
 								<div className="absolute right-0 p-1 bg-red-400 rounded-full animate-ping"></div>
 								<div className="absolute right-0 p-1 bg-red-400 border rounded-full"></div>
 								<button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 focus:outline-none focus:ring">
@@ -138,7 +184,7 @@ export default function AppBar(props: AppBarProps) {
 									</svg>
 								</button>
 
-								{/* <!-- Dropdown card --> */}
+								{/* <!-- Notifications Dropdown card --> */}
 								{/* <div
                     className="absolute w-48 max-w-md mt-3 transform bg-white rounded-md shadow-lg -translate-x-3/4 min-w-max"
                   >
@@ -177,6 +223,7 @@ export default function AppBar(props: AppBarProps) {
 									</svg>
 								</button>
 
+								{/* Services dropdown */}
 								{/* <div
                     className="absolute mt-3 transform bg-white rounded-md shadow-lg -translate-x-3/4 min-w-max"
                   >
@@ -244,7 +291,7 @@ export default function AppBar(props: AppBarProps) {
                   </div> */}
 							</div>
 
-							<div className="relative" x-data="{ isOpen: false }">
+							<div className="relative">
 								<button className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 focus:outline-none focus:ring">
 									<svg
 										className="w-6 h-6 text-gray-500"
@@ -262,7 +309,7 @@ export default function AppBar(props: AppBarProps) {
 									</svg>
 								</button>
 
-								{/* <!-- Dropdown card --> */}
+								{/* <!-- Options Dropdown card --> */}
 								{/* <div
                     className="absolute w-40 max-w-sm mt-3 transform bg-white rounded-md shadow-lg -translate-x-3/4 min-w-max"
                   >
@@ -285,8 +332,11 @@ export default function AppBar(props: AppBarProps) {
 						</div>
 
 						{/* <!-- avatar button --> */}
-						<div className="relative" x-data="{ isOpen: false }">
-							<button className="p-1 bg-gray-200 rounded-full focus:outline-none focus:ring">
+						<div className="relative">
+							<button
+								className="p-1 bg-gray-200 rounded-full focus:outline-none focus:ring"
+								onClick={handleProfileMenu}
+							>
 								<img
 									className="object-cover w-8 h-8 rounded-full"
 									src="https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
@@ -297,26 +347,8 @@ export default function AppBar(props: AppBarProps) {
 							<div className="absolute right-0 p-1 bg-green-400 rounded-full bottom-3 animate-ping"></div>
 							<div className="absolute right-0 p-1 bg-green-400 border border-white rounded-full bottom-3"></div>
 
-							{/* <!-- Dropdown card --> */}
-							{/* <div
-                  className="absolute mt-3 transform -translate-x-full bg-white rounded-md shadow-lg min-w-max"
-                >
-                  <div className="flex flex-col p-4 space-y-1 font-medium border-b">
-                    <span className="text-gray-800">User Name</span>
-                    <span className="text-sm text-gray-400">username@example.com</span>
-                  </div>
-                  <ul className="flex flex-col p-2 my-2 space-y-1">
-                    <li>
-                      <a href="/" className="block px-2 py-1 transition rounded-md hover:bg-gray-100">Link</a>
-                    </li>
-                    <li>
-                      <a href="/" className="block px-2 py-1 transition rounded-md hover:bg-gray-100">Another Link</a>
-                    </li>
-                  </ul>
-                  <div className="flex items-center justify-center p-4 text-blue-700 underline border-t">
-                    <a href="/">Logout</a>
-                  </div>
-                </div> */}
+							{/* <!-- Profile Dropdown card --> */}
+							{dropdownMenuState.profile ? <ProfileDropdown /> : <></>}
 						</div>
 					</div>
 				</div>

@@ -38,7 +38,6 @@ export const Login = (props: any) => {
 							initialValues={{ email: "", password: "", rememberMe: false }}
 							validationSchema={loginValidationSchema}
 							onSubmit={(values, { setSubmitting }) => {
-								console.log(values);
 								setSubmitting(true);
 								login({
 									variables: {
