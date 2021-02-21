@@ -4,7 +4,7 @@ import { NotFound404 } from "./components/Common/NotFound404";
 import { useMeQuery } from "./generated/graphql";
 import { Login } from "./modules/auth/login/Login";
 import { Register } from "./modules/auth/register/Register";
-import { Dashboard } from "./modules/dashboard/Dashboard";
+import { HomePage } from "./modules/dashboard/HomePage";
 import PrivateRoute from "./utils/PrivateRoute";
 import PublicRoute from "./utils/PublicRoute";
 
@@ -21,7 +21,7 @@ function App() {
 					<Register />
 				</PublicRoute>
 				<PrivateRoute path="/">
-					<Dashboard />
+					<HomePage />
 				</PrivateRoute>
 				<Route path="*">
 					<NotFound404 />

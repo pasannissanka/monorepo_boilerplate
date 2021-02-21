@@ -1,5 +1,5 @@
 import React from "react";
-import { IDropDownState } from "../../modules/dashboard/Dashboard";
+import { IDropDownState } from "../../modules/dashboard/HomePage";
 import ProfileDropdown from "./Menus/ProfileDropdown";
 
 export interface AppBarProps {
