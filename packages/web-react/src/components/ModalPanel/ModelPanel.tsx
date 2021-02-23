@@ -20,7 +20,7 @@ export default function ModalPanel({
 	const titleLabel = `${title}Label`;
 	return (
 		<section
-			className={`fixed inset-y-0 right-0 z-20 w-screen bg-white shadow-xl  focus:outline-none
+			className={`fixed inset-y-0 right-0 z-50 w-screen bg-white shadow-xl  focus:outline-none
       ${size === "small" ? "max-w-md" : size === "medium" ? "max-w-xl" : size === "large" ? "max-w-4xl" : ""}`}
 			aria-labelledby="titleLabel"
 		>
@@ -38,9 +38,9 @@ export default function ModalPanel({
 						stroke="currentColor"
 					>
 						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="2"
 							d="M6 18L18 6M6 6l12 12"
 						/>
 					</svg>

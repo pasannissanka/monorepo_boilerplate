@@ -1,14 +1,15 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import DataTable, { LabelKeyValue } from "../../components/DataTable/DataTable";
 import ModalPanel from "../../components/ModalPanel/ModelPanel";
-import { useGetAllUsersQuery } from "../../generated/graphql";
+import { useGetUsersQuery } from "../../generated/graphql";
 import FilterMenu from "./Menus/FilterMenu";
 
 interface UsersProps {}
 
 export default function Users(props: UsersProps) {
-	const { data } = useGetAllUsersQuery();
+	const { data } = useGetUsersQuery();
 	const container = React.createRef<HTMLDivElement>();
 
 	const [filterMenuToggle, setFilterMenuToggle] = useState(false);
@@ -19,55 +20,43 @@ export default function Users(props: UsersProps) {
 	});
 
 	const handleClickOutside = (event: any) => {
-		if (container.current && container.current.contains(event.target)) {
+		if (container.current && !container.current.contains(event.target)) {
 			setFilterMenuToggle(false);
 		}
 	};
 
-	const tableLables = ["Username", "First Name", "Last Name", "Email", "id"];
-
-	const UserTable = data?.getAllUsers.map((user) => (
-		<tr key={user.id}>
-			<td className="border-dashed border-t border-gray-200 px-3">
-				<label className="text-teal-500 inline-flex justify-between items-center hover:bg-gray-200 px-2 py-2 rounded-lg cursor-pointer">
-					<input
-						type="checkbox"
-						className="form-checkbox rowCheckbox focus:outline-none focus:shadow-outline"
-					/>
-				</label>
-			</td>
-			<td className="border-dashed border-t border-gray-200 userName">
-				<span className="text-gray-700 px-6 py-3 flex items-center">
-					{user.username}
-				</span>
-			</td>
-			<td className="border-dashed border-t border-gray-200 firstName">
-				<span className="text-gray-700 px-6 py-3 flex items-center">
-					{user.firstName}
-				</span>
-			</td>
-			<td className="border-dashed border-t border-gray-200 lastName">
-				<span className="text-gray-700 px-6 py-3 flex items-center">
-					{user.lastName}
-				</span>
-			</td>
-			<td className="border-dashed border-t border-gray-200 emailAddress">
-				<span className="text-gray-700 px-6 py-3 flex items-center">
-					{user.email}
-				</span>
-			</td>
-			<td className="border-dashed border-t border-gray-200 userId">
-				<span className="text-gray-700 px-6 py-3 flex items-center">
-					{user.id}
-				</span>
-			</td>
-		</tr>
-	));
+	const [labelState, setLabelState] = useState<LabelKeyValue[]>([
+		{
+			key: "username",
+			value: "Username",
+			selected: true,
+		},
+		{
+			key: "email",
+			value: "Email",
+			selected: true,
+		},
+		{
+			key: "firstName",
+			value: "First Name",
+			selected: true,
+		},
+		{
+			key: "lastName",
+			value: "Last Name",
+			selected: true,
+		},
+		{
+			key: "id",
+			value: "ID",
+			selected: true,
+		},
+	]);
 
 	return (
-    // TODO Extract data table component
-    // Filter search, data table actions
-    // paginantion
+		// TODO
+		// data table actions
+		// paginantion
 
 		<React.Fragment>
 			<div className="container mx-auto px-4" ref={container}>
@@ -171,23 +160,14 @@ export default function Users(props: UsersProps) {
 										<polyline points="6 9 12 15 18 9" />
 									</svg>
 								</button>
-
-								{/* Dropdown */}
-								{filterMenuToggle ? <FilterMenu /> : <></>}
-								{/* <div className="z-40 absolute top-0 right-0 w-40 bg-white rounded-lg shadow-lg mt-12 -mr-1 block py-1 overflow-hidden">
-									<template>
-										<label className="flex justify-start items-center text-truncate hover:bg-gray-100 px-4 py-2">
-											<div className="text-teal-600 mr-3">
-												<input
-													type="checkbox"
-													className="form-checkbox focus:outline-none focus:shadow-outline"
-													checked
-												/>
-											</div>
-											<div className="select-none text-gray-700"></div>
-										</label>
-									</template>
-								</div> */}
+								{filterMenuToggle ? (
+									<FilterMenu
+										labels={labelState}
+										setLabelState={setLabelState}
+									/>
+								) : (
+									<></>
+								)}
 							</div>
 						</div>
 					</div>
@@ -214,33 +194,7 @@ export default function Users(props: UsersProps) {
 						</button>
 					</div>
 				</div>
-
-				{/* Data table template */}
-				<div className="overflow-x-auto bg-white rounded-lg shadow overflow-y-auto relative">
-					<table className="border-collapse table-auto w-full whitespace-no-wrap bg-white table-striped relative">
-						<thead>
-							<tr className="text-left">
-								<th className="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">
-									<label className="text-teal-500 inline-flex justify-between items-center hover:bg-gray-200 px-2 py-2 rounded-lg cursor-pointer">
-										<input
-											type="checkbox"
-											className="form-checkbox focus:outline-none focus:shadow-outline"
-										/>
-									</label>
-								</th>
-								{tableLables.map((lable, index) => (
-									<th
-										key={index}
-										className="bg-gray-100 sticky top-0 border-b border-gray-200 px-6 py-2 text-gray-600 font-bold tracking-wider uppercase text-xs"
-									>
-										{lable}
-									</th>
-								))}
-							</tr>
-						</thead>
-						<tbody>{UserTable}</tbody>
-					</table>
-				</div>
+				<DataTable data={data?.getUsers.users} labels={labelState} />
 			</div>
 
 			{modalToggle ? (

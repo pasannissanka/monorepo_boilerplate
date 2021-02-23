@@ -1,9 +1,26 @@
-query getAllUsers {
-  getAllUsers {
-    id
-    username
-    email
-    firstName
-    lastName
-  }
+query getUsers(
+	$limit: Int
+	$offset: Int
+	$username: String
+	$name: String
+	$email: String
+) {
+	getUsers(
+		input: {
+			limit: $limit
+			offset: $offset
+			username: $username
+			name: $name
+			email: $email
+		}
+	) {
+		count
+		users {
+			id
+			username
+			email
+			firstName
+			lastName
+		}
+	}
 }
