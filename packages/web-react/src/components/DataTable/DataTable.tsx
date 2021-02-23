@@ -1,4 +1,5 @@
 import React from "react";
+import ActionItem from "./ActionItem";
 
 export interface LabelKeyValue {
 	key: string;
@@ -25,10 +26,7 @@ export default function DataTable({ labels, data }: DataTableProps) {
 				</td>
 				{labels.map(({ key, selected }, index) =>
 					selected ? (
-						<td
-							className="border-dashed border-t border-gray-200 userName"
-							key={index}
-						>
+						<td className="border-dashed border-t border-gray-200" key={index}>
 							<span className="text-gray-700 px-6 py-3 flex items-center">
 								{item[key]}
 							</span>
@@ -37,6 +35,7 @@ export default function DataTable({ labels, data }: DataTableProps) {
 						<React.Fragment key={index}></React.Fragment>
 					)
 				)}
+				<ActionItem />
 			</tr>
 		))
 	) : (
@@ -69,6 +68,9 @@ export default function DataTable({ labels, data }: DataTableProps) {
 									<React.Fragment key={index}></React.Fragment>
 								)
 							)}
+							<th className="bg-gray-100 sticky top-0 border-b border-gray-200 px-6 py-2 text-gray-600 font-bold tracking-wider uppercase text-xs">
+								Actions
+							</th>
 						</tr>
 					</thead>
 					<tbody>{DataListTable}</tbody>
