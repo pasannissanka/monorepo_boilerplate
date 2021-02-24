@@ -1,45 +1,49 @@
-import React, { Dispatch, forwardRef, LegacyRef, SetStateAction } from "react";
-import { LabelKeyValue } from "./DataTable";
+import React, { forwardRef, LegacyRef } from "react";
+import { useUsersContext } from "../../modules/Users/UserContext";
 
 interface FilterMenuProps {
-	items: LabelKeyValue[];
-	setItemsState: Dispatch<SetStateAction<LabelKeyValue[]>>;
 	type: "checkbox" | "radio";
 }
 
-function FilterMenu(
-	{ items, setItemsState, type }: FilterMenuProps,
-	ref: LegacyRef<HTMLDivElement>
-) {
-	const handleCheckOnChange = (event: React.ChangeEvent, index: number) => {
+function FilterMenu({ type }: FilterMenuProps, ref: LegacyRef<HTMLDivElement>) {
+	const {
+		labelState,
+		setLabelState,
+		searchFields,
+		setSearchFields,
+	} = useUsersContext();
+
+	const handleCheckOnChange = (index: number, key: string) => {
 		if (type === "checkbox") {
-			setItemsState([
-				...items.slice(0, index),
+			setLabelState([
+				...labelState.slice(0, index),
 				{
-					...items[index],
-					selected: !items[index].selected,
+					...labelState[index],
+					selected: !labelState[index].selected,
 				},
-				...items.slice(index + 1),
+				...labelState.slice(index + 1),
 			]);
 		}
 		if (type === "radio") {
-			items = items.map((i) => {
-				return {
-					...i,
-					selected: false,
-				};
-			});
-			items[index].selected = true;
-			setItemsState([...items]);
+			setSearchFields([
+				...searchFields.map((label) => {
+					return {
+						...label,
+						selected: label.key === key ? true : false,
+					};
+				}),
+			]);
 		}
 	};
+
+	const labels = type === "checkbox" ? labelState : searchFields;
 
 	return (
 		<div
 			ref={ref}
 			className="z-10 absolute top-0 left-0 w-40 bg-white rounded-lg shadow-lg mt-12 -mr-1 block py-1 overflow-hidden"
 		>
-			{items.map(({ value, selected }, index) => (
+			{labels.map(({ value, selected, key }, index) => (
 				<label
 					key={index}
 					className="flex justify-start items-center text-truncate hover:bg-gray-100 px-4 py-2"
@@ -50,7 +54,7 @@ function FilterMenu(
 							className="form-checkbox focus:outline-none focus:shadow-outline"
 							value={value}
 							checked={selected}
-							onChange={(event) => handleCheckOnChange(event, index)}
+							onChange={() => handleCheckOnChange(index, key)}
 						/>
 					</div>
 					<div className="select-none text-gray-700">{value}</div>

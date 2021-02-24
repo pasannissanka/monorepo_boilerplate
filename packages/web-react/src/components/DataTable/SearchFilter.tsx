@@ -1,13 +1,9 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import FilterMenu from "./FilterMenu";
-import { LabelKeyValue } from "./DataTable";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useUsersContext } from "../../modules/Users/UserContext";
+import FilterMenu from "./FilterMenu";
 
 interface SearchFilterProps {
-	searchFields: LabelKeyValue[];
-	setSearchFields: Dispatch<SetStateAction<LabelKeyValue[]>>;
-	filterFields: LabelKeyValue[];
-	setFilterFields: Dispatch<SetStateAction<LabelKeyValue[]>>;
 	setSearchQuery: React.Dispatch<
 		React.SetStateAction<{
 			search: string;
@@ -16,29 +12,24 @@ interface SearchFilterProps {
 	>;
 }
 
-export default function SearchFilter({
-	searchFields,
-	filterFields,
-	setSearchFields,
-	setFilterFields,
-	setSearchQuery,
-}: SearchFilterProps) {
+export default function SearchFilter({ setSearchQuery }: SearchFilterProps) {
+	const { searchFields } = useUsersContext();
+
 	const history = useHistory();
+	const container = React.createRef<HTMLDivElement>();
 	const [toggleMenus, setToggleMenus] = useState({
 		filter: false,
 		search: false,
 	});
-
 	const [searchQ, setsearchQ] = useState({ search: "" });
-
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setsearchQ({ search: event.target.value });
-	};
-	const container = React.createRef<HTMLDivElement>();
 
 	useEffect(() => {
 		document.addEventListener("mousedown", handleClickOutside);
 	});
+
+	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setsearchQ({ search: event.target.value });
+	};
 
 	const handleClickOutside = (event: any) => {
 		if (container.current && !container.current.contains(event.target)) {
@@ -48,8 +39,9 @@ export default function SearchFilter({
 			});
 		}
 	};
-
+	
 	const selectedSearch = searchFields.find((field) => field.selected);
+
 	const handleSetSearchQuery = () => {
 		setSearchQuery({ search: searchQ.search, searchBy: selectedSearch!.key });
 		history.push({
@@ -116,12 +108,7 @@ export default function SearchFilter({
 							</svg>
 						</button>
 						{toggleMenus.search ? (
-							<FilterMenu
-								ref={container}
-								items={searchFields}
-								setItemsState={setSearchFields}
-								type="radio"
-							/>
+							<FilterMenu ref={container} type="radio" />
 						) : null}
 						<button
 							className="shadow rounded-lg rounded-l-none inline-flex items-center bg-transparent hover:text-blue-500 focus:outline-none focus:shadow-outline text-gray-500 py-2 px-2 md:px-4 text-sm"
@@ -192,12 +179,7 @@ export default function SearchFilter({
 								</svg>
 							</button>
 							{toggleMenus.filter ? (
-								<FilterMenu
-									ref={container}
-									items={filterFields}
-									setItemsState={setFilterFields}
-									type="checkbox"
-								/>
+								<FilterMenu ref={container} type="checkbox" />
 							) : null}
 						</div>
 					</div>

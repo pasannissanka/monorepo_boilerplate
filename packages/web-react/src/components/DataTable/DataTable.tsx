@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useUsersContext } from "../../modules/Users/UserContext";
 import ActionItem from "./ActionItem";
 
 export interface LabelKeyValue {
@@ -9,35 +10,31 @@ export interface LabelKeyValue {
 
 interface DataTableProps {
 	labels: LabelKeyValue[];
-	data: any[];
-	setDataState: React.Dispatch<any>;
 }
 
-export default function DataTable({
-	labels,
-	data,
-	setDataState,
-}: DataTableProps) {
+export default function DataTable({ labels }: DataTableProps) {
+	const { dataList, setdataList } = useUsersContext();
+
 	const [allSelected, setAllSelected] = useState(false);
 	const [anySelected, setAnySelected] = useState(false);
 
 	useEffect(() => {
-		if (!data.every((d) => d.selected)) {
+		if (!dataList?.every((d) => d.selected)) {
 			setAllSelected(false);
 		}
-	}, [data, allSelected]);
+	}, [dataList, allSelected]);
 
 	useEffect(() => {
-		if (data.some((d) => d.selected)) {
+		if (dataList?.some((d) => d.selected)) {
 			setAnySelected(true);
 		} else {
 			setAnySelected(false);
 		}
-	}, [data, anySelected]);
+	}, [dataList, anySelected]);
 
 	const handleAllElementsCheckbox = () => {
-		setDataState([
-			...data.map((user: any) => {
+		setdataList([
+			...dataList.map((user: any) => {
 				return {
 					...user,
 					selected: !allSelected,
@@ -48,18 +45,18 @@ export default function DataTable({
 	};
 
 	const handleElementCheckbox = (index: number) => {
-		setDataState([
-			...data.slice(0, index),
+		setdataList([
+			...dataList.slice(0, index),
 			{
-				...data[index],
-				selected: !data[index].selected,
+				...dataList[index],
+				selected: !dataList[index].selected,
 			},
-			...data.slice(index + 1),
+			...dataList.slice(index + 1),
 		]);
 	};
 
-	const DataListTable = data ? (
-		data.map((item: any, index: number) => (
+	const DataListTable = dataList ? (
+		dataList.map((item: any, index: number) => (
 			<tr key={item.id}>
 				<td className="border-dashed border-t border-gray-200 px-3">
 					<label className="text-teal-500 inline-flex justify-between items-center hover:bg-gray-200 px-2 py-2 rounded-lg cursor-pointer">
@@ -131,7 +128,7 @@ export default function DataTable({
 					) : null}
 					<div className="inline-flex">
 						<span className="inline-flex items-center mx-1 my-2 text-sm text-gray-500 py-2 px-1 md:px-2">
-							Showing {data.length} of {data.length} result(s)
+							Showing {dataList.length} of {dataList.length} result(s)
 						</span>
 					</div>
 				</div>
