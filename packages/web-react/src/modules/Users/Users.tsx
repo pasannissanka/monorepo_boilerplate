@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DataTable, { LabelKeyValue } from "../../components/DataTable/DataTable";
 import SearchFilter from "../../components/DataTable/SearchFilter";
 import ModalPanel from "../../components/ModalPanel/ModelPanel";
@@ -10,9 +10,11 @@ export default function Users(props: UsersProps) {
 	const [modalToggle, setmodalToggle] = useState(false);
 	const [searchQuery, setSearchQuery] = useState({
 		search: "",
+		searchBy: "all",
 	});
+
 	const { data } = useGetUsersQuery({
-		variables: { username: searchQuery.search },
+		variables: { [searchQuery.searchBy]: searchQuery.search },
 	});
 
 	const [labelState, setLabelState] = useState<LabelKeyValue[]>([
@@ -65,6 +67,21 @@ export default function Users(props: UsersProps) {
 		},
 	]);
 
+	const [dataList, setdataList] = useState<any>([]);
+
+	useEffect(() => {
+		if (data?.getUsers) {
+			setdataList([
+				...data!.getUsers.users.map((user) => {
+					return {
+						...user,
+						selected: false,
+					};
+				}),
+			]);
+		}
+	}, [data]);
+
 	return (
 		// TODO
 		// data table actions
@@ -81,7 +98,11 @@ export default function Users(props: UsersProps) {
 					setSearchFields={setSearchFields}
 					setSearchQuery={setSearchQuery}
 				/>
-				<DataTable data={data?.getUsers.users} labels={labelState} />
+				<DataTable
+					data={dataList}
+					labels={labelState}
+					setDataState={setdataList}
+				/>
 			</div>
 
 			{modalToggle ? (

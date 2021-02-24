@@ -1,6 +1,7 @@
 import React from "react";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { useLogoutMutation } from "../../generated/graphql";
+import { client } from "../../lib/init-apollo";
 
 interface DrawerProps {
 	isDrawerOpen: boolean;
@@ -16,6 +17,7 @@ export default function Drawer({
 
 	const handleLogOut = async () => {
 		try {
+			client.resetStore();
 			await logout();
 			history.push("/");
 		} catch (error) {

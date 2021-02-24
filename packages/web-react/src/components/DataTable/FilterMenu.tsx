@@ -11,8 +11,7 @@ function FilterMenu(
 	{ items, setItemsState, type }: FilterMenuProps,
 	ref: LegacyRef<HTMLDivElement>
 ) {
-	const toggleChecked = (event: React.MouseEvent, index: number) => {
-		// event.preventDefault();
+	const handleCheckOnChange = (event: React.ChangeEvent, index: number) => {
 		if (type === "checkbox") {
 			setItemsState([
 				...items.slice(0, index),
@@ -23,21 +22,22 @@ function FilterMenu(
 				...items.slice(index + 1),
 			]);
 		}
-		// TODO radio button toggle state
 		if (type === "radio") {
-			setItemsState([
-				...items.map((i) => {
-					return { ...i, selected: false };
-				}),
-			]);
-			console.log(items);
+			items = items.map((i) => {
+				return {
+					...i,
+					selected: false,
+				};
+			});
+			items[index].selected = true;
+			setItemsState([...items]);
 		}
 	};
 
 	return (
 		<div
 			ref={ref}
-			className="z-10 absolute top-0 right-0 w-40 bg-white rounded-lg shadow-lg mt-12 -mr-1 block py-1 overflow-hidden"
+			className="z-10 absolute top-0 left-0 w-40 bg-white rounded-lg shadow-lg mt-12 -mr-1 block py-1 overflow-hidden"
 		>
 			{items.map(({ value, selected }, index) => (
 				<label
@@ -48,8 +48,9 @@ function FilterMenu(
 						<input
 							type={type}
 							className="form-checkbox focus:outline-none focus:shadow-outline"
-							defaultChecked={selected}
-							onClick={(event) => toggleChecked(event, index)}
+							value={value}
+							checked={selected}
+							onChange={(event) => handleCheckOnChange(event, index)}
 						/>
 					</div>
 					<div className="select-none text-gray-700">{value}</div>

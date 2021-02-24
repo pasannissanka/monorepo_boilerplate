@@ -11,6 +11,7 @@ interface SearchFilterProps {
 	setSearchQuery: React.Dispatch<
 		React.SetStateAction<{
 			search: string;
+			searchBy: string;
 		}>
 	>;
 }
@@ -48,12 +49,13 @@ export default function SearchFilter({
 		}
 	};
 
+	const selectedSearch = searchFields.find((field) => field.selected);
 	const handleSetSearchQuery = () => {
-		setSearchQuery({ search: searchQ.search });
-		history.push({ search: `?username=${searchQ.search.toString()}` });
+		setSearchQuery({ search: searchQ.search, searchBy: selectedSearch!.key });
+		history.push({
+			search: `?${selectedSearch?.key}=${searchQ.search.toString()}`,
+		});
 	};
-
-	const selectedSearch = searchFields.filter((field) => field.selected);
 
 	return (
 		<React.Fragment>
@@ -96,11 +98,7 @@ export default function SearchFilter({
 								setToggleMenus({ ...toggleMenus, search: !toggleMenus.search })
 							}
 						>
-							<span className="hidden md:block">
-								{selectedSearch.map((sel, i) => (
-									<span key={i}>{sel.value} &nbsp; </span>
-								))}
-							</span>
+							<span className="hidden md:block">{selectedSearch?.value}</span>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								className="w-5 h-5 ml-1"
@@ -122,7 +120,7 @@ export default function SearchFilter({
 								ref={container}
 								items={searchFields}
 								setItemsState={setSearchFields}
-								type="checkbox"
+								type="radio"
 							/>
 						) : null}
 						<button

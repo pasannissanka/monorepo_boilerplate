@@ -11,6 +11,7 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
 
 	const handleLogOut = async () => {
 		try {
+			client.resetStore();
 			await logout();
 			history.push("/");
 		} catch (error) {

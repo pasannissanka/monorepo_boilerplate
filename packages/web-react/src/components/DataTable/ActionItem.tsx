@@ -3,13 +3,16 @@ import { usePopper } from "react-popper";
 
 // TODO style button menu
 
-export interface ActionItemProp {}
+export interface ActionItemProp {
+	id: number;
+	index: number;
+}
 
 export default function ActionItem(props: ActionItemProp) {
 	const [actionModalToggel, setActionModalToggel] = useState(false);
 	const buttonRef = useRef(null);
 	const popperRef = useRef(null);
-	const container = React.createRef<HTMLButtonElement>();
+	const container = React.createRef<HTMLDivElement>();
 
 	useEffect(() => {
 		document.addEventListener("mousedown", handleClickOutside);
@@ -75,8 +78,20 @@ export default function ActionItem(props: ActionItemProp) {
 				{actionModalToggel ? (
 					<div ref={popperRef} style={styles.popper} {...attributes.popper}>
 						<div ref={setArrowRef} style={styles.arrow} id="arrow" />
-						<div className="z-10 absolute top-0 right-0 w-40 bg-gray-50 rounded-lg shadow-lg-mr-1 block py-1 overflow-hidden">
-							<button ref={container} onClick={() => console.log("clicked")}>
+						<div
+							ref={container}
+							className="z-30 absolute top-0 right-0 w-40 bg-gray-100 rounded-lg shadow-lg -mr-1 block py-1 overflow-hidden"
+						>
+							<button
+								className="w-full flex items-center justify-center bg-gray-50 hover:bg-gray-300 hover:text-blue-500 py-2 px-3 focus:outline-none focus:shadow-outline"
+								onClick={() => console.log("clicked")}
+							>
+								test
+							</button>
+							<button
+								className="w-full flex items-center justify-center bg-gray-50 hover:bg-gray-300 hover:text-blue-500 py-2 px-3 focus:outline-none focus:shadow-outline"
+								onClick={() => console.log("clicked")}
+							>
 								test
 							</button>
 						</div>
