@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
 import { usePopper } from "react-popper";
+import { ElementAction } from "./DataTable";
 
 // TODO style button menu
 
 export interface ActionItemProp {
 	id: number;
 	index: number;
+	eleActions: ElementAction[];
 }
 
 export default function ActionItem(props: ActionItemProp) {
@@ -82,18 +84,16 @@ export default function ActionItem(props: ActionItemProp) {
 							ref={container}
 							className="z-30 relative top-0 right-0 w-40 bg-gray-100 rounded-lg shadow-lg -mr-1 block py-1 overflow-hidden"
 						>
-							<button
-								className="w-full flex items-center justify-center bg-gray-50 hover:bg-gray-300 hover:text-blue-500 py-2 px-3 focus:outline-none focus:shadow-outline"
-								onClick={() => console.log("clicked")}
-							>
-								test
-							</button>
-							<button
-								className="w-full flex items-center justify-center bg-gray-50 hover:bg-gray-300 hover:text-blue-500 py-2 px-3 focus:outline-none focus:shadow-outline"
-								onClick={() => console.log("clicked")}
-							>
-								test
-							</button>
+							{props.eleActions.map((action, i) => (
+								<button
+									key={i}
+									className="w-full flex items-center justify-center bg-gray-50 hover:bg-gray-100 hover:text-blue-500 py-2 px-3 focus:outline-none focus:shadow-outline"
+									onClick={() => action.action(props.id)}
+								>
+									{action.svg}
+									<span className="ml-2">{action.title}</span>
+								</button>
+							))}
 						</div>
 					</div>
 				) : null}

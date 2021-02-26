@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import DataTable, { SearchFields } from "../../components/DataTable/DataTable";
+import DataTable, {
+	ElementAction,
+	SearchFields,
+} from "../../components/DataTable/DataTable";
 import { LabelKeyValue } from "../../components/DataTable/Table";
 import ModalPanel from "../../components/ModalPanel/ModelPanel";
 import { useGetUsersQuery } from "../../generated/graphql";
@@ -13,15 +16,6 @@ export default function Users(props: UsersProps) {
 		searchBy: "name",
 		limit: 10,
 		offset: 0,
-	});
-
-	const { data, loading } = useGetUsersQuery({
-		variables: {
-			[search.searchBy]: search.search,
-			limit: search.limit,
-			offset: search.offset,
-		},
-		fetchPolicy: "cache-and-network",
 	});
 
 	const [labelState, setLabelState] = useState<LabelKeyValue[]>([
@@ -73,6 +67,61 @@ export default function Users(props: UsersProps) {
 			selected: false,
 		},
 	]);
+	const eleActions: ElementAction[] = [
+		{
+			action: (key: number, event?: any) => {
+				console.log("1", key);
+			},
+			title: "Test Action 1",
+			svg: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					className="w-4 h-4" // Required!
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth={2}
+						d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+					/>
+				</svg>
+			),
+		},
+		{
+			action: (key?: number, event?: any) => {
+				console.log("1", key);
+			},
+			title: "Test Action 2",
+			svg: (
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					className="w-4 h-4" // Required!
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth={2}
+						d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+					/>
+				</svg>
+			),
+		},
+	];
+
+	const { data, loading } = useGetUsersQuery({
+		variables: {
+			[search.searchBy]: search.search,
+			limit: search.limit,
+			offset: search.offset,
+		},
+		fetchPolicy: "cache-and-network",
+	});
 
 	const [dataList, setdataList] = useState<any>([]);
 
@@ -91,16 +140,15 @@ export default function Users(props: UsersProps) {
 
 	const totalCount = data?.getUsers.count;
 
-	return (
-		// TODO
-		// data table actions
 
+	return (
 		<React.Fragment>
 			<div className="container mx-auto px-4">
 				<h1 className="text-3xl py-4 mb-1">Users</h1>
 
 				<DataTable
 					{...{
+						eleActions,
 						loading,
 						totalCount,
 						setSearch,
@@ -163,9 +211,7 @@ export default function Users(props: UsersProps) {
 				>
 					<div>test content</div>
 				</ModalPanel>
-			) : (
-				<></>
-			)}
+			) : null}
 		</React.Fragment>
 	);
 }

@@ -5,6 +5,7 @@ import Table from "./Table";
 
 interface DataTableInputs extends DataTableState {
 	globalActions?: React.ReactNode;
+	eleActions?: any[];
 }
 
 export interface SearchFields {
@@ -14,12 +15,18 @@ export interface SearchFields {
 	offset: number;
 }
 
+export interface ElementAction {
+	title: string;
+	action: (key: number, event?: any) => void;
+  svg: React.ReactNode;
+}
+
 export default function DataTable(props: DataTableInputs) {
 	return (
 		<React.Fragment>
 			<DataTableContext.Provider value={props}>
 				<SearchFilter globalActions={props.globalActions} />
-				<Table />
+				<Table eleActions={props.eleActions} />
 			</DataTableContext.Provider>
 		</React.Fragment>
 	);

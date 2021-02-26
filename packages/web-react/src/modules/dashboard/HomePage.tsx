@@ -4,7 +4,6 @@ import { NotFound404 } from "../../components/Common/NotFound404";
 import Drawer from "../../components/Drawer/Drawer";
 import Footer from "../../components/Footer/Footer";
 import AppBar, { AppBarProps } from "../../components/Navbar/AppBar";
-import { useMeQuery } from "../../generated/graphql";
 import Users from "../Users/Users";
 import Dashboard from "./Dashboard";
 
@@ -16,7 +15,7 @@ export interface IDropDownState {
 interface HomePageProps {}
 
 export const HomePage = (props: HomePageProps) => {
-	useMeQuery();
+	
 	const [isDrawerOpen, setDrawerOpenState] = useState(true);
 	const [dropdownMenuState, setdropdownMenuState] = useState<IDropDownState>({
 		profile: false,

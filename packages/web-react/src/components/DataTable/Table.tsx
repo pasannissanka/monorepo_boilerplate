@@ -4,6 +4,7 @@ import { useDataTableContext } from "../../components/DataTable/Context/DataTabl
 import LoadingDisplay from "../Common/LoadingDisplay";
 import NoRecordsFound from "../Common/NoRecordsFound";
 import ActionItem from "./ActionItem";
+import { ElementAction } from "./DataTable";
 
 export interface LabelKeyValue {
 	key: string;
@@ -11,7 +12,9 @@ export interface LabelKeyValue {
 	selected?: boolean;
 }
 
-interface TableProps {}
+interface TableProps {
+	eleActions?: ElementAction[];
+}
 
 export default function Table(props: TableProps) {
 	const {
@@ -122,7 +125,13 @@ export default function Table(props: TableProps) {
 						<React.Fragment key={index}></React.Fragment>
 					)
 				)}
-				<ActionItem id={item.id} index={index} />
+				{props.eleActions ? (
+					<ActionItem
+						id={item.id}
+						index={index}
+						eleActions={props.eleActions}
+					/>
+				) : null}
 			</tr>
 		))
 	) : (
@@ -169,11 +178,12 @@ export default function Table(props: TableProps) {
 					</div>
 				) : null}
 				<div className="inline-flex">
-					<span className="inline-flex items-center mx-1 my-2 text-sm text-gray-500 py-2 px-1 md:px-2">
-						{selected.count > 0
-							? `Selected ${selected.count} of ${dataList.length} result(s)`
-							: ``}
-					</span>
+					{/* TODO add more content - Table top header */}
+					{selected.count > 0 ? (
+						<span className="inline-flex items-center mx-1 my-2 text-sm text-gray-500 py-2 px-1 md:px-2">
+							Selected {selected.count} of {dataList.length} result(s)
+						</span>
+					) : null}
 				</div>
 			</div>
 			<div className="overflow-x-auto bg-white rounded-lg rounded-t-none rounded-b-none shadow overflow-y-auto relative">
@@ -204,13 +214,13 @@ export default function Table(props: TableProps) {
 										>
 											{value}
 										</th>
-									) : (
-										<React.Fragment key={index}></React.Fragment>
-									)
+									) : null
 								)}
-								<th className="bg-gray-100 sticky top-0 border-b border-gray-200 px-6 py-2 text-gray-600 font-bold tracking-wider uppercase text-xs">
-									Actions
-								</th>
+								{props.eleActions ? (
+									<th className="bg-gray-100 sticky top-0 border-b border-gray-200 px-6 py-2 text-gray-600 font-bold tracking-wider uppercase text-xs">
+										Actions
+									</th>
+								) : null}
 							</tr>
 						</thead>
 						<tbody>{ListTable}</tbody>
@@ -219,10 +229,10 @@ export default function Table(props: TableProps) {
 					<NoRecordsFound text="No Records Found!" />
 				)}
 			</div>
-			<div className="bg-gray-100 h-11 border-b-2 rounded-lg rounded-t-none shadow flex justify-between">
+			<div className="bg-gray-100 h-11 rounded-lg rounded-t-none shadow flex justify-between">
 				<div className="inline-flex">
 					<button
-						className={`ml-2 mr-1 my-1 shadow rounded-lg inline-flex items-center  text-gray-500 focus:outline-none focus:shadow-outline py-1 px-1 md:px-4 text-xs disabled:opacity-50
+						className={`ml-2 mr-1 my-1 shadow rounded-lg inline-flex items-center  text-gray-500 focus:outline-none focus:shadow-outline py-1 px-1 md:px-4 text-sm disabled:opacity-50
 						${!pagBtnState.prev ? `cursor-default` : ` hover:text-blue-500 bg-gray-50`}`}
 						onClick={() => handlePageOffsetChange("prev")}
 						disabled={!pagBtnState.prev}
@@ -244,7 +254,7 @@ export default function Table(props: TableProps) {
 						<span className="hidden md:block ml-2">Prev</span>
 					</button>
 					<button
-						className={`ml-2 mr-1 my-1 shadow rounded-lg inline-flex items-center text-gray-500 focus:outline-none focus:shadow-outline py-1 px-1 md:px-4 text-xs disabled:opacity-50
+						className={`ml-2 mr-1 my-1 shadow rounded-lg inline-flex items-center text-gray-500 focus:outline-none focus:shadow-outline py-1 px-1 md:px-4 text-sm disabled:opacity-50
 						${!pagBtnState.next ? `cursor-default` : ` hover:text-blue-500 bg-gray-50`}`}
 						onClick={() => handlePageOffsetChange("next")}
 						disabled={!pagBtnState.next}
