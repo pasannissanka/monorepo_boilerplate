@@ -282,7 +282,9 @@ export default function Table(props: TableProps) {
 						<select
 							className="rounded-lg border inline-flex items-center bg-white hover:text-blue-500 focus:outline-none focus:shadow-outline text-gray-500 py-1 px-1 mx-2 text-sm"
 							onChange={handlePageLimitChange}
+							value={search.limit}
 						>
+							<option value="5">5</option>
 							<option value="10">10</option>
 							<option value="20">20</option>
 							<option value="50">50</option>

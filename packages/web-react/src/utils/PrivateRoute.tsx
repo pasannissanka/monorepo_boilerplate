@@ -1,7 +1,6 @@
 import Cookies from "js-cookie";
 import React from "react";
 import { Redirect, Route, RouteProps } from "react-router-dom";
-import { useMeQuery } from "../generated/graphql";
 
 interface PrivateRouteProps extends RouteProps {
 	// component: any;
@@ -9,7 +8,7 @@ interface PrivateRouteProps extends RouteProps {
 
 export default function PrivateRoute(props: PrivateRouteProps) {
 	const { children, ...rest } = props;
-	useMeQuery();
+	// useMeQuery();
 
 	// TODO State management
 	const isAuthenticated = Boolean(Cookies.get("access_token"));

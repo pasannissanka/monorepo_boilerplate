@@ -92,7 +92,7 @@ export default function Users(props: UsersProps) {
 		},
 		{
 			action: (key?: number, event?: any) => {
-				console.log("1", key);
+				console.log("2", key);
 			},
 			title: "Test Action 2",
 			svg: (
