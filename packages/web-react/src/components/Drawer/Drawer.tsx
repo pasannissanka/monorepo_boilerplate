@@ -12,13 +12,16 @@ export default function Drawer({
 	isDrawerOpen,
 	handleDrawerOpen,
 }: DrawerProps) {
-	const [logout] = useLogoutMutation();
+	const [logout] = useLogoutMutation({
+		onCompleted: () => {
+			client.clearStore();
+		},
+	});
 	const history = useHistory();
 
 	const handleLogOut = async () => {
 		try {
-			client.resetStore();
-			await logout();
+			await logout({});
 			history.push("/");
 		} catch (error) {
 			console.log(error);

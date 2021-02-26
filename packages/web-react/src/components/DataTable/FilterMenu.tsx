@@ -1,5 +1,5 @@
 import React, { forwardRef, LegacyRef } from "react";
-import { useUsersContext } from "../../modules/Users/UserContext";
+import { useDataTableContext } from "../../components/DataTable/Context/DataTableContext";
 
 interface FilterMenuProps {
 	type: "checkbox" | "radio";
@@ -11,7 +11,7 @@ function FilterMenu({ type }: FilterMenuProps, ref: LegacyRef<HTMLDivElement>) {
 		setLabelState,
 		searchFields,
 		setSearchFields,
-	} = useUsersContext();
+	} = useDataTableContext();
 
 	const handleCheckOnChange = (index: number, key: string) => {
 		if (type === "checkbox") {

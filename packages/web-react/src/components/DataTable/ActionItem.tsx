@@ -80,7 +80,7 @@ export default function ActionItem(props: ActionItemProp) {
 						<div ref={setArrowRef} style={styles.arrow} id="arrow" />
 						<div
 							ref={container}
-							className="z-30 absolute top-0 right-0 w-40 bg-gray-100 rounded-lg shadow-lg -mr-1 block py-1 overflow-hidden"
+							className="z-30 relative top-0 right-0 w-40 bg-gray-100 rounded-lg shadow-lg -mr-1 block py-1 overflow-hidden"
 						>
 							<button
 								className="w-full flex items-center justify-center bg-gray-50 hover:bg-gray-300 hover:text-blue-500 py-2 px-3 focus:outline-none focus:shadow-outline"

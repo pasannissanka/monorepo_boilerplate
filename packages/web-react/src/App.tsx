@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { NotFound404 } from "./components/Common/NotFound404";
-import { useMeQuery } from "./generated/graphql";
 import { Login } from "./modules/auth/login/Login";
 import { Register } from "./modules/auth/register/Register";
 import { HomePage } from "./modules/dashboard/HomePage";
@@ -9,7 +8,7 @@ import PrivateRoute from "./utils/PrivateRoute";
 import PublicRoute from "./utils/PublicRoute";
 
 function App() {
-	useMeQuery();
+	// useMeQuery();
 
 	return (
 		<Router>

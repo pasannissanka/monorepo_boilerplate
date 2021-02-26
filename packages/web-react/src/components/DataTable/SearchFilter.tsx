@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useUsersContext } from "../../modules/Users/UserContext";
+import { useDataTableContext } from "../../components/DataTable/Context/DataTableContext";
 import FilterMenu from "./FilterMenu";
 
 interface SearchFilterProps {
-	setSearchQuery: React.Dispatch<
-		React.SetStateAction<{
-			search: string;
-			searchBy: string;
-		}>
-	>;
+	globalActions?: React.ReactNode;
 }
 
-export default function SearchFilter({ setSearchQuery }: SearchFilterProps) {
-	const { searchFields } = useUsersContext();
+export default function SearchFilter(props: SearchFilterProps) {
+	const { searchFields, search, setSearch } = useDataTableContext();
 
 	const history = useHistory();
 	const container = React.createRef<HTMLDivElement>();
@@ -39,11 +34,16 @@ export default function SearchFilter({ setSearchQuery }: SearchFilterProps) {
 			});
 		}
 	};
-	
+
 	const selectedSearch = searchFields.find((field) => field.selected);
 
 	const handleSetSearchQuery = () => {
-		setSearchQuery({ search: searchQ.search, searchBy: selectedSearch!.key });
+		setSearch({
+			...search,
+			offset: 0,
+			search: searchQ.search,
+			searchBy: selectedSearch!.key,
+		});
 		history.push({
 			search: `?${selectedSearch?.key}=${searchQ.search.toString()}`,
 		});
@@ -58,7 +58,7 @@ export default function SearchFilter({ setSearchQuery }: SearchFilterProps) {
 						<input
 							type="search"
 							name="search"
-							className="w-full pl-10 pr-4 py-2 rounded-lg rounded-r-none shadow focus:outline-none focus:shadow-outline text-gray-600 font-medium text-sm"
+							className="w-auto pl-10 pr-4 py-2 rounded-lg rounded-r-none shadow focus:outline-none focus:shadow-outline text-gray-600 font-medium text-sm"
 							placeholder="Search by..."
 							value={searchQ.search}
 							onChange={handleChange}
@@ -185,25 +185,8 @@ export default function SearchFilter({ setSearchQuery }: SearchFilterProps) {
 					</div>
 				</div>
 				{/* Add */}
-				<div className="ml-2">
-					<button className="shadow  rounded-lg inline-flex items-center bg-white hover:text-blue-500 focus:outline-none focus:shadow-outline text-gray-500 font-semibold py-2 px-2 md:px-4 text-sm">
-						<span className="hidden md:block">Add</span>
-						<svg
-							className="w-5 h-5 ml-1"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-							/>
-						</svg>
-					</button>
-				</div>
+
+				{props.globalActions}
 			</div>
 		</React.Fragment>
 	);
