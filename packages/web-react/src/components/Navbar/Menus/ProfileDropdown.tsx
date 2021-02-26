@@ -11,6 +11,7 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
 
 	const handleLogOut = async () => {
 		try {
+			client.resetStore();
 			await logout();
 			history.push("/");
 		} catch (error) {
@@ -23,7 +24,7 @@ export default function ProfileDropdown(props: ProfileDropdownProps) {
 	});
   
 	return (
-		<div className="absolute mt-3 transform -translate-x-full bg-white rounded-md shadow-lg min-w-max">
+		<div className="z-20 absolute mt-3 transform -translate-x-full bg-white rounded-md shadow-lg min-w-max">
 			<div className="flex flex-col p-4 space-y-1 font-medium border-b">
 				<span className="text-gray-800">{me?.me.user.username}</span>
 				<span className="text-sm text-gray-400">{me?.me.user.email}</span>

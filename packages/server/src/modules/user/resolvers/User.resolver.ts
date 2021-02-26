@@ -1,6 +1,7 @@
 import { ApolloError } from "apollo-server-express";
 import * as argon2 from "argon2";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { createQueryBuilder, SelectQueryBuilder } from "typeorm";
 import { GenerateAuthTokens } from "../../../helpers/auth/auth_tokens";
 import { ContextType } from "../../common/types/Context.type";
 import { User } from "../models/User";
@@ -8,15 +9,52 @@ import {
 	ChangePasswordInput,
 	LoginUserInput,
 	RegisterUserInput,
+	UserQueryParams,
+	UserQueryResponse,
 	UserResponse,
 } from "../types/user.type";
 
 @Resolver()
 export class UserResolver {
+
 	@Authorized()
-	@Query(() => [User])
-	async getAllUsers(): Promise<Array<User>> {
-		return User.find();
+	@Query(() => UserQueryResponse)
+	async getUsers(
+		@Arg("input") input: UserQueryParams,
+	): Promise<UserQueryResponse> {
+
+		let query: SelectQueryBuilder<any> = createQueryBuilder("user");
+		if (input.name) {
+			query.orWhere('User.firstName ILIKE :searchTerm', { searchTerm: `%${input?.name}%` })
+				.orWhere('User.lastName ILIKE :searchTerm', { searchTerm: `%${input?.name}%` })
+				.orWhere('User.username ILIKE :searchTerm', { searchTerm: `%${input?.name}%` })
+		}
+		if (input.email) {
+			query.orWhere('User.email ILIKE :searchTerm', { searchTerm: `%${input?.email}%` })
+		}
+		if (input.username) {
+			query.orWhere('User.username ILIKE :searchTerm', { searchTerm: `%${input?.username}%` })
+		}
+		if (input.offset) {
+			query.offset(input.offset)
+		}
+		if (input.limit) {
+			query.limit(input.limit)
+		}
+
+		let result;
+		try {
+			result = await query.getManyAndCount();
+		} catch (error) {
+			console.log(error)
+			throw new ApolloError("Internal server error");
+		}
+		const [users, count] = result;
+
+		return {
+			users,
+			count
+		}
 	}
 
 	@Mutation(() => UserResponse)

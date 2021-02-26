@@ -15,9 +15,20 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  getAllUsers: Array<User>;
+  getUsers: UserQueryResponse;
   me?: Maybe<UserResponse>;
   getAllPosts: Array<Post>;
+};
+
+
+export type QueryGetUsersArgs = {
+  input: UserQueryParams;
+};
+
+export type UserQueryResponse = {
+  __typename?: 'UserQueryResponse';
+  users: Array<User>;
+  count: Scalars['Int'];
 };
 
 export type User = {
@@ -27,6 +38,14 @@ export type User = {
   email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
+};
+
+export type UserQueryParams = {
+  username?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
 };
 
 export type UserResponse = {
@@ -89,6 +108,27 @@ export type ChangePasswordInput = {
   newPassword: Scalars['String'];
 };
 
+export type GetUsersQueryVariables = Exact<{
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  username?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetUsersQuery = (
+  { __typename?: 'Query' }
+  & { getUsers: (
+    { __typename?: 'UserQueryResponse' }
+    & Pick<UserQueryResponse, 'count'>
+    & { users: Array<(
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username' | 'email' | 'firstName' | 'lastName'>
+    )> }
+  ) }
+);
+
 export type LoginMutationVariables = Exact<{
   emailOrUserName: Scalars['String'];
   password: Scalars['String'];
@@ -149,6 +189,52 @@ export type MeQuery = (
 );
 
 
+export const GetUsersDocument = gql`
+    query getUsers($limit: Int, $offset: Int, $username: String, $name: String, $email: String) {
+  getUsers(
+    input: {limit: $limit, offset: $offset, username: $username, name: $name, email: $email}
+  ) {
+    count
+    users {
+      id
+      username
+      email
+      firstName
+      lastName
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUsersQuery__
+ *
+ * To run a query within a React component, call `useGetUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      username: // value for 'username'
+ *      name: // value for 'name'
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useGetUsersQuery(baseOptions?: Apollo.QueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
+        return Apollo.useQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, baseOptions);
+      }
+export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
+          return Apollo.useLazyQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, baseOptions);
+        }
+export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
+export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
+export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
 export const LoginDocument = gql`
     mutation login($emailOrUserName: String!, $password: String!) {
   login(input: {emailOrUserName: $emailOrUserName, password: $password}) {

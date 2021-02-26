@@ -11,7 +11,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "moduleResolution": "node",
-    "declaration": false,
+    "declaration": true,
     "composite": true,
     "removeComments": true,
     "noImplicitAny": true,
