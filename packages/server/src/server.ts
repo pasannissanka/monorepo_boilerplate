@@ -13,7 +13,7 @@ import { GenerateAuthTokens, TokenPayload } from "./helpers/auth/auth_tokens";
 import { customAuthChecker } from "./modules/common/authChecker";
 import { ContextType } from "./modules/common/types/Context.type";
 import { User } from "./modules/user/models/User";
-import { PostResolver, UserResolver } from "./resolvers";
+import { ActivityResolver, PostResolver, UserResolver } from "./resolvers";
 
 const PORT = process.env.PORT as string;
 const PATH = process.env.GRAPHQLPATH as string;
@@ -44,7 +44,7 @@ const main = async () => {
 	);
 
 	const schema = await buildSchema({
-		resolvers: [PostResolver, UserResolver],
+		resolvers: [PostResolver, UserResolver, ActivityResolver],
 		authChecker: customAuthChecker,
 	});
 

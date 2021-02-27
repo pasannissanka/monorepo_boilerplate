@@ -147,6 +147,32 @@ export default function Drawer({
 									Posts
 								</span>
 							</RouterLink>
+							<RouterLink
+								to="/activities"
+								className={`flex items-center p-2 space-x-2 rounded-md hover:bg-gray-100 ${
+									isDrawerOpen ? "justify-center" : ""
+								}`}
+							>
+								<span>
+									<svg
+										className="w-6 h-6 text-gray-400"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+										/>
+									</svg>
+								</span>
+								<span className={`${isDrawerOpen ? "lg:hidden" : ""}`}>
+									Activities
+								</span>
+							</RouterLink>
 						</li>
 					</ul>
 				</nav>

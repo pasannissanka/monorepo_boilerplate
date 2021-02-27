@@ -6,6 +6,7 @@ import DataTable, {
 import { LabelKeyValue } from "../../components/DataTable/Table";
 import ModalPanel from "../../components/ModalPanel/ModelPanel";
 import { useGetPostsQuery } from "../../generated/graphql";
+import AddNewPost from "./AddNewPost/AddNewPost";
 
 interface UsersProps {}
 
@@ -146,7 +147,7 @@ export default function Posts(props: UsersProps) {
 								className="shadow rounded-lg inline-flex items-center bg-white hover:text-blue-500 focus:outline-none focus:shadow-outline text-gray-500 font-semibold py-2 px-2 md:px-4 text-sm"
 								onClick={() => setmodalToggle(!modalToggle)}
 							>
-								<span className="hidden md:block">Add</span>
+								<span className="hidden md:block">New</span>
 								<svg
 									className="w-5 h-5 ml-1"
 									xmlns="http://www.w3.org/2000/svg"
@@ -158,7 +159,7 @@ export default function Posts(props: UsersProps) {
 										strokeLinecap="round"
 										strokeLinejoin="round"
 										strokeWidth={2}
-										d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+										d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
 									/>
 								</svg>
 							</button>
@@ -169,9 +170,9 @@ export default function Posts(props: UsersProps) {
 
 			{modalToggle ? (
 				<ModalPanel
-					title="Add New User"
+					title="Create New Post"
 					closeAction={setmodalToggle}
-					size="medium"
+					size="large"
 					titleSVG={
 						<svg
 							className="w-8 h-8"
@@ -184,12 +185,12 @@ export default function Posts(props: UsersProps) {
 								strokeLinecap="round"
 								strokeLinejoin="round"
 								strokeWidth={2}
-								d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+								d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
 							/>
 						</svg>
 					}
 				>
-					<div>test content</div>
+					<AddNewPost />
 				</ModalPanel>
 			) : null}
 		</React.Fragment>

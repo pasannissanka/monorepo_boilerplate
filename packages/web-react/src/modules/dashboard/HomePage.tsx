@@ -5,6 +5,7 @@ import Drawer from "../../components/Drawer/Drawer";
 import Footer from "../../components/Footer/Footer";
 import AppBar, { AppBarProps } from "../../components/Navbar/AppBar";
 import { useMeQuery } from "../../generated/graphql";
+import Activities from "../Activities/Activities";
 import Posts from "../Post/Post";
 import Users from "../Users/Users";
 import Dashboard from "./Dashboard";
@@ -61,6 +62,9 @@ export const HomePage = (props: HomePageProps) => {
 							</Route>
 							<Route exact path="/posts">
 								<Posts />
+							</Route>
+							<Route exact path="/activities">
+								<Activities />
 							</Route>
 							<Route exact path="/profile">
 								<NotFound404 />

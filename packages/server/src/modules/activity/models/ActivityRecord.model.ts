@@ -10,15 +10,19 @@ export class ActivityRecord extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: number;
 
+  @Field(() => User)
   @ManyToOne(type => User, user => user.activityRecords, { cascade: true })
   user: User;
 
+  @Field(() => ActivityData)
   @OneToOne(type => ActivityData, { cascade: true }) @JoinColumn()
   activityData: ActivityData;
 
+  @Field(() => String)
   @Column()
   message: string;
 
+  @Field(() => String)
   @Column()
   action: string;
 }
