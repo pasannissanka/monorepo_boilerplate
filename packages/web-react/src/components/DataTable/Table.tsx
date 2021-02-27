@@ -104,7 +104,7 @@ export default function Table(props: TableProps) {
 	const ListTable = dataList ? (
 		dataList.map((item: any, index: number) => (
 			<tr key={item.id}>
-				<td className="border-dashed border-t border-gray-200 px-3">
+				<td className="border-dashed border-t border-gray-200 px-3 ">
 					<label className="text-teal-500 inline-flex justify-between items-center hover:bg-gray-200 px-2 py-2 rounded-lg cursor-pointer">
 						<input
 							type="checkbox"
@@ -117,7 +117,7 @@ export default function Table(props: TableProps) {
 				{labelState.map(({ key, selected }, index) =>
 					selected ? (
 						<td className="border-dashed border-t border-gray-200" key={index}>
-							<span className="text-gray-700 px-6 py-3 flex items-center max-w-xs truncate ">
+							<span className="text-gray-700 px-6 py-3 flex items-center">
 								{item[key]}
 							</span>
 						</td>

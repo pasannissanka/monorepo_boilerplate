@@ -84,11 +84,11 @@ const main = async () => {
 				const decoded = verify(accessToken, publicKEYACCESS, {
 					algorithms: ["RS256"],
 				});
-				
+
 				(req as any).user = decoded;
 
 				return next();
-			} catch (error) {}
+			} catch (error) { }
 
 			if (!refreshToken) {
 				return next();

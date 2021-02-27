@@ -1,5 +1,6 @@
 import { ApolloError } from "apollo-server-express";
 import * as argon2 from "argon2";
+import { ActivityRecordBuilder } from "../../../helpers/activity/ActivityRecordBuilder";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { createQueryBuilder, SelectQueryBuilder } from "typeorm";
 import { GenerateAuthTokens } from "../../../helpers/auth/auth_tokens";
@@ -16,6 +17,11 @@ import {
 
 @Resolver()
 export class UserResolver {
+	private ARBuilder: ActivityRecordBuilder;
+
+	constructor() {
+		this.ARBuilder = new ActivityRecordBuilder("user", "auth");
+	}
 
 	@Authorized()
 	@Query(() => UserQueryResponse)
@@ -92,6 +98,16 @@ export class UserResolver {
 		});
 		ctx.res.cookie("access_token", accessToken, {
 			expires: new Date(Date.now() + 3600000),
+		});
+
+		await this.ARBuilder.create({
+			action: "create",
+			by: user.id,
+			data: {
+				id: user.id,
+				type: "user"
+			},
+			message: "Self register"
 		});
 
 		return {
@@ -173,6 +189,17 @@ export class UserResolver {
 		} catch (error) {
 			throw new ApolloError("Internal server error");
 		}
+
+		await this.ARBuilder.create({
+			action: "change_pw",
+			by: user.id,
+			data: {
+				id: user.id,
+				type: "user"
+			},
+			message: "Self Password change"
+		});
+
 		return "SUCCESS";
 	}
 
@@ -180,6 +207,7 @@ export class UserResolver {
 	@Query(() => UserResponse, { nullable: true })
 	async me(@Ctx() ctx: ContextType): Promise<UserResponse> {
 		const user = await User.findOne({ where: { email: ctx.user.email } });
+
 		if (user) {
 			return {
 				user,

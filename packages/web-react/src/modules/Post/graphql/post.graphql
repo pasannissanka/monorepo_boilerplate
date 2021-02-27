@@ -1,0 +1,12 @@
+query getPosts($limit: Int, $offset: Int, $title: String, $all: String) {
+	getPosts(
+		input: { limit: $limit, offset: $offset, title: $title, all: $all }
+	) {
+		count
+		posts {
+			id
+			title
+			content
+		}
+	}
+}

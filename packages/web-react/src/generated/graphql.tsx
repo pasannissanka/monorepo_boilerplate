@@ -17,12 +17,17 @@ export type Query = {
   __typename?: 'Query';
   getUsers: UserQueryResponse;
   me?: Maybe<UserResponse>;
-  getAllPosts: Array<Post>;
+  getPosts: PostSearchResponse;
 };
 
 
 export type QueryGetUsersArgs = {
   input: UserQueryParams;
+};
+
+
+export type QueryGetPostsArgs = {
+  input: PostSearchParams;
 };
 
 export type UserQueryResponse = {
@@ -53,11 +58,24 @@ export type UserResponse = {
   user?: Maybe<User>;
 };
 
+export type PostSearchResponse = {
+  __typename?: 'PostSearchResponse';
+  posts: Array<Post>;
+  count: Scalars['Int'];
+};
+
 export type Post = {
   __typename?: 'Post';
   id: Scalars['Int'];
   title: Scalars['String'];
   content: Scalars['String'];
+};
+
+export type PostSearchParams = {
+  title?: Maybe<Scalars['String']>;
+  all?: Maybe<Scalars['String']>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
 };
 
 export type Mutation = {
@@ -107,6 +125,26 @@ export type ChangePasswordInput = {
   oldPassword: Scalars['String'];
   newPassword: Scalars['String'];
 };
+
+export type GetPostsQueryVariables = Exact<{
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  title?: Maybe<Scalars['String']>;
+  all?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetPostsQuery = (
+  { __typename?: 'Query' }
+  & { getPosts: (
+    { __typename?: 'PostSearchResponse' }
+    & Pick<PostSearchResponse, 'count'>
+    & { posts: Array<(
+      { __typename?: 'Post' }
+      & Pick<Post, 'id' | 'title' | 'content'>
+    )> }
+  ) }
+);
 
 export type GetUsersQueryVariables = Exact<{
   limit?: Maybe<Scalars['Int']>;
@@ -189,6 +227,47 @@ export type MeQuery = (
 );
 
 
+export const GetPostsDocument = gql`
+    query getPosts($limit: Int, $offset: Int, $title: String, $all: String) {
+  getPosts(input: {limit: $limit, offset: $offset, title: $title, all: $all}) {
+    count
+    posts {
+      id
+      title
+      content
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPostsQuery__
+ *
+ * To run a query within a React component, call `useGetPostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPostsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      offset: // value for 'offset'
+ *      title: // value for 'title'
+ *      all: // value for 'all'
+ *   },
+ * });
+ */
+export function useGetPostsQuery(baseOptions?: Apollo.QueryHookOptions<GetPostsQuery, GetPostsQueryVariables>) {
+        return Apollo.useQuery<GetPostsQuery, GetPostsQueryVariables>(GetPostsDocument, baseOptions);
+      }
+export function useGetPostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPostsQuery, GetPostsQueryVariables>) {
+          return Apollo.useLazyQuery<GetPostsQuery, GetPostsQueryVariables>(GetPostsDocument, baseOptions);
+        }
+export type GetPostsQueryHookResult = ReturnType<typeof useGetPostsQuery>;
+export type GetPostsLazyQueryHookResult = ReturnType<typeof useGetPostsLazyQuery>;
+export type GetPostsQueryResult = Apollo.QueryResult<GetPostsQuery, GetPostsQueryVariables>;
 export const GetUsersDocument = gql`
     query getUsers($limit: Int, $offset: Int, $username: String, $name: String, $email: String) {
   getUsers(

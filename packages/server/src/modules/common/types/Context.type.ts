@@ -8,7 +8,7 @@ export interface ContextType {
 
 export interface UserDecoded {
     email: string,
-    id: number,
+    uuid: number,
     iat: number,
     exp: number
 }
