@@ -5,8 +5,11 @@ import DataTable, {
 } from "../../components/DataTable/DataTable";
 import { LabelKeyValue } from "../../components/DataTable/Table";
 import ModalPanel from "../../components/ModalPanel/ModelPanel";
-import { useGetPostsQuery } from "../../generated/graphql";
-import AddNewPost from "./AddNewPost/AddNewPost";
+import {
+	useGetPostsQuery,
+	useCreatePostMutation,
+} from "../../generated/graphql";
+import AddNewPost, { IPost } from "./AddNewPost/AddNewPost";
 
 interface UsersProps {}
 
@@ -18,6 +21,11 @@ export default function Posts(props: UsersProps) {
 		searchBy: "all",
 		limit: 5,
 		offset: 0,
+	});
+
+	const [post, setPostState] = useState<IPost>({
+		title: "",
+		content: "",
 	});
 
 	const [labelState, setLabelState] = useState<LabelKeyValue[]>([
@@ -122,6 +130,17 @@ export default function Posts(props: UsersProps) {
 
 	const totalCount = data?.getPosts.count;
 
+	const [createPostMutation] = useCreatePostMutation();
+
+	const createNewPost = () => {
+		createPostMutation({
+			variables: post,
+		})
+			.then((data) => {
+				console.log(data);
+			})
+			.catch((err) => console.log(err));
+	};
 	return (
 		<React.Fragment>
 			<div className="container mx-auto px-4">
@@ -189,8 +208,11 @@ export default function Posts(props: UsersProps) {
 							/>
 						</svg>
 					}
+					footerContent={
+						<button onClick={() => createNewPost()}>Submit</button>
+					}
 				>
-					<AddNewPost />
+					<AddNewPost post={post} setPost={setPostState} />
 				</ModalPanel>
 			) : null}
 		</React.Fragment>

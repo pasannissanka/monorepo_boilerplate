@@ -35,11 +35,11 @@ export default function SearchFilter(props: SearchFilterProps) {
 		}
 	};
 
-	const selectedSearch = searchFields.find((field) => field.selected);
+	const selectedSearch = searchFields!.find((field) => field.selected);
 
 	const handleSetSearchQuery = () => {
-		setSearch({
-			...search,
+		setSearch!({
+			...search!,
 			offset: 0,
 			search: searchQ.search,
 			searchBy: selectedSearch!.key,

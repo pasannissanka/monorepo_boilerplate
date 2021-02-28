@@ -42,7 +42,7 @@ export default function Table(props: TableProps) {
 			count: selected.allSelected ? 0 : dataList.length,
 			allSelected: !selected.allSelected,
 		});
-		setdataList([
+		setdataList!([
 			...dataList.map((user: any) => {
 				return {
 					...user,
@@ -59,7 +59,7 @@ export default function Table(props: TableProps) {
 				: selected.count - 1,
 			allSelected: selected.count + 1 === dataList.length,
 		});
-		setdataList([
+		setdataList!([
 			...dataList.slice(0, index),
 			{
 				...dataList[index],
@@ -72,22 +72,22 @@ export default function Table(props: TableProps) {
 	const handlePageLimitChange = (
 		event: React.ChangeEvent<HTMLSelectElement>
 	) => {
-		setSearch({
-			...search,
+		setSearch!({
+			...search!,
 			limit: parseInt(event.target.value),
 		});
 	};
 
 	const handlePageOffsetChange = (action: "prev" | "next") => {
 		if (action === "prev") {
-			setSearch({
-				...search,
-				offset: search.offset - search.limit,
+			setSearch!({
+				...search!,
+				offset: search!.offset - search!.limit,
 			});
 		} else {
-			setSearch({
-				...search,
-				offset: search.offset + search.limit,
+			setSearch!({
+				...search!,
+				offset: search!.offset + search!.limit,
 			});
 		}
 	};
@@ -95,8 +95,8 @@ export default function Table(props: TableProps) {
 	useEffect(() => {
 		if (dataList.length > 0) {
 			setPagBtnState({
-				next: search.offset + search.limit < totalCount!,
-				prev: search.offset >= dataList.length,
+				next: search!.offset + search!.limit < totalCount!,
+				prev: search!.offset >= dataList.length,
 			});
 		}
 	}, [search, dataList, totalCount]);
@@ -114,7 +114,7 @@ export default function Table(props: TableProps) {
 						/>
 					</label>
 				</td>
-				{labelState.map(({ key, selected }, index) =>
+				{labelState!.map(({ key, selected }, index) =>
 					selected ? (
 						<td className="border-dashed border-t border-gray-200" key={index}>
 							<span className="text-gray-700 px-6 py-3 flex items-center">
@@ -206,7 +206,7 @@ export default function Table(props: TableProps) {
 										/>
 									</label>
 								</th>
-								{labelState.map(({ value, selected }, index) =>
+								{labelState!.map(({ value, selected }, index) =>
 									selected ? (
 										<th
 											key={index}
@@ -282,7 +282,7 @@ export default function Table(props: TableProps) {
 						<select
 							className="rounded-lg border inline-flex items-center bg-white hover:text-blue-500 focus:outline-none focus:shadow-outline text-gray-500 py-1 px-1 mx-2 text-sm"
 							onChange={handlePageLimitChange}
-							value={search.limit}
+							value={search!.limit}
 						>
 							<option value="5">5</option>
 							<option value="10">10</option>
@@ -295,7 +295,7 @@ export default function Table(props: TableProps) {
 				</div>
 				<div className="inline-flex">
 					<span className="inline-flex items-center mx-1 my-2 text-sm text-gray-500 py-2 px-1 md:px-2">
-						Showing {search.offset + 1}-{search.offset + dataList.length} of{" "}
+						Showing {search!.offset + 1}-{search!.offset + dataList.length} of{" "}
 						{totalCount} result(s)
 					</span>
 				</div>

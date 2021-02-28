@@ -10,3 +10,11 @@ query getPosts($limit: Int, $offset: Int, $title: String, $all: String) {
 		}
 	}
 }
+
+mutation createPost($title: String!, $content: String!) {
+	createPost(content: $content, title: $title) {
+		id
+		title
+		content
+	}
+}

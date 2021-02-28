@@ -6,13 +6,13 @@ export interface DataTableState {
 	totalCount: number | undefined;
 	dataList: any[];
   loading: boolean;
-	setdataList: React.Dispatch<any>;
-	labelState: LabelKeyValue[];
-	setLabelState: React.Dispatch<React.SetStateAction<LabelKeyValue[]>>;
-	searchFields: LabelKeyValue[];
-	setSearchFields: React.Dispatch<React.SetStateAction<LabelKeyValue[]>>;
-	setSearch: React.Dispatch<React.SetStateAction<SearchFields>>;
-	search: SearchFields;
+	setdataList?: React.Dispatch<any>;
+	labelState?: LabelKeyValue[];
+	setLabelState?: React.Dispatch<React.SetStateAction<LabelKeyValue[]>>;
+	searchFields?: LabelKeyValue[];
+	setSearchFields?: React.Dispatch<React.SetStateAction<LabelKeyValue[]>>;
+	setSearch?: React.Dispatch<React.SetStateAction<SearchFields>>;
+	search?: SearchFields;
 }
 
 export const DataTableContext = createContext<DataTableState>({

@@ -37,6 +37,7 @@ export class ActivityResolver {
       query.limit(input.limit)
     }
 
+    // TODO: Multiple roles, (admin - all records)
     query.where("ActivityRecord.user.id = :uuid", { uuid: ctx.user.uuid });
 
     try {

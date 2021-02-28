@@ -15,18 +15,18 @@ function FilterMenu({ type }: FilterMenuProps, ref: LegacyRef<HTMLDivElement>) {
 
 	const handleCheckOnChange = (index: number, key: string) => {
 		if (type === "checkbox") {
-			setLabelState([
-				...labelState.slice(0, index),
+			setLabelState!([
+				...labelState!.slice(0, index),
 				{
-					...labelState[index],
-					selected: !labelState[index].selected,
+					...labelState![index],
+					selected: !labelState![index].selected,
 				},
-				...labelState.slice(index + 1),
+				...labelState!.slice(index + 1),
 			]);
 		}
 		if (type === "radio") {
-			setSearchFields([
-				...searchFields.map((label) => {
+			setSearchFields!([
+				...searchFields!.map((label) => {
 					return {
 						...label,
 						selected: label.key === key ? true : false,
@@ -43,7 +43,7 @@ function FilterMenu({ type }: FilterMenuProps, ref: LegacyRef<HTMLDivElement>) {
 			ref={ref}
 			className="z-10 absolute top-0 left-0 w-40 bg-white rounded-lg shadow-lg mt-12 -mr-1 block py-1 overflow-hidden"
 		>
-			{labels.map(({ value, selected, key }, index) => (
+			{labels!.map(({ value, selected, key }, index) => (
 				<label
 					key={index}
 					className="flex justify-start items-center text-truncate hover:bg-gray-100 px-4 py-2"
