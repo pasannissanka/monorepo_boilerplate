@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DataFeed from "../../components/DataFeed/DataFeed";
+import { FeedElement, KeyValueObject } from "../../components/DataFeed/Feed";
 import { useGetActivitiesQuery } from "../../generated/graphql";
 
 interface ActivitiesProps {}
@@ -9,18 +10,22 @@ export default function Activities(props: ActivitiesProps) {
 		variables: {
 			limit: 10,
 		},
+		fetchPolicy: "network-only",
 	});
 
-	const [dataList, setdataList] = useState<any>([]);
+	const [dataList, setdataList] = useState<FeedElement[]>([]);
 
 	useEffect(() => {
 		if (data?.getActivites) {
 			setdataList([
 				...data.getActivites.activities.map((activity) => {
 					return {
-						...activity,
-						selected: false,
-					};
+						id: activity.id,
+						heading: activity.user.username,
+						subHeading: activity.user.email,
+						timeStamp: activity.created,
+						content: `${activity.message} ${activity.action}`,
+					} as FeedElement;
 				}),
 			]);
 		}

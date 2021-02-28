@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from "type-graphql";
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { ActivityRecord } from "../../../modules/activity/models/ActivityRecord.model";
 
 @Entity()
@@ -33,4 +33,12 @@ export class User extends BaseEntity {
 
 	@OneToMany(type => ActivityRecord, activityRecords => activityRecords.user)
 	activityRecords: ActivityRecord[];
+
+	@Field()
+	@CreateDateColumn()
+  created: Date;
+
+	@Field()
+  @UpdateDateColumn()
+  updated: Date;
 }

@@ -18,6 +18,7 @@ query getActivities (
       }
       message
       action
+      created
     }
     count
   }

@@ -11,6 +11,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
+  DateTime: any;
 };
 
 export type Query = {
@@ -49,7 +51,10 @@ export type User = {
   email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
+  created: Scalars['DateTime'];
+  updated: Scalars['DateTime'];
 };
+
 
 export type UserQueryParams = {
   username?: Maybe<Scalars['String']>;
@@ -75,6 +80,8 @@ export type Post = {
   id: Scalars['Int'];
   title: Scalars['String'];
   content: Scalars['String'];
+  created: Scalars['DateTime'];
+  updated: Scalars['DateTime'];
 };
 
 export type PostSearchParams = {
@@ -97,6 +104,7 @@ export type ActivityRecord = {
   activityData: ActivityData;
   message: Scalars['String'];
   action: Scalars['String'];
+  created: Scalars['DateTime'];
 };
 
 export type ActivityData = {
@@ -174,7 +182,7 @@ export type GetActivitiesQuery = (
     & Pick<ActivitiesResponse, 'count'>
     & { activities: Array<(
       { __typename?: 'ActivityRecord' }
-      & Pick<ActivityRecord, 'id' | 'message' | 'action'>
+      & Pick<ActivityRecord, 'id' | 'message' | 'action' | 'created'>
       & { user: (
         { __typename?: 'User' }
         & Pick<User, 'id' | 'username' | 'email'>
@@ -201,7 +209,7 @@ export type GetPostsQuery = (
     & Pick<PostSearchResponse, 'count'>
     & { posts: Array<(
       { __typename?: 'Post' }
-      & Pick<Post, 'id' | 'title' | 'content'>
+      & Pick<Post, 'id' | 'title' | 'content' | 'created' | 'updated'>
     )> }
   ) }
 );
@@ -236,7 +244,7 @@ export type GetUsersQuery = (
     & Pick<UserQueryResponse, 'count'>
     & { users: Array<(
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'username' | 'email' | 'firstName' | 'lastName'>
+      & Pick<User, 'id' | 'username' | 'email' | 'firstName' | 'lastName' | 'created' | 'updated'>
     )> }
   ) }
 );
@@ -318,6 +326,7 @@ export const GetActivitiesDocument = gql`
       }
       message
       action
+      created
     }
     count
   }
@@ -359,6 +368,8 @@ export const GetPostsDocument = gql`
       id
       title
       content
+      created
+      updated
     }
   }
 }
@@ -439,6 +450,8 @@ export const GetUsersDocument = gql`
       email
       firstName
       lastName
+      created
+      updated
     }
   }
 }

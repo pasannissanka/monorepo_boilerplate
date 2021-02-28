@@ -26,6 +26,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "styled-components": "^5.2.1",
+    "timeago.js": "^4.0.2",
     "typescript": "^4.0.3",
     "web-vitals": "^0.2.4",
     "yup": "^0.32.8"
@@ -71,6 +72,7 @@
     "@types/react-draft-wysiwyg": "^1.13.1",
     "@types/react-router-dom": "^5.1.7",
     "@types/styled-components": "^5.1.7",
+    "@types/timeago": "^1.6.0",
     "autoprefixer": "^9",
     "postcss": "^7",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat"

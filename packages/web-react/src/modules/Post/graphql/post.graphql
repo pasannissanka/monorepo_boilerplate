@@ -7,6 +7,8 @@ query getPosts($limit: Int, $offset: Int, $title: String, $all: String) {
 			id
 			title
 			content
+			created
+      updated
 		}
 	}
 }
