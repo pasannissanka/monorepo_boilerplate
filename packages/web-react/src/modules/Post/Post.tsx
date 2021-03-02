@@ -11,7 +11,7 @@ import {
 	ElementAction,
 	LabelKeyValue,
 	SearchFields,
-} from "@solvedcard/ui/lib/src";
+} from "@solvedcard/ui";
 
 interface UsersProps {}
 
