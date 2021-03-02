@@ -3286,7 +3286,7 @@
     prop-types "^15.7.2"
     regenerator-runtime "^0.13.7"
 
-"@storybook/addons@6.1.20":
+"@storybook/addons@6.1.20", "@storybook/addons@^6.1.15":
   version "6.1.20"
   resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-6.1.20.tgz#da01dabd6692919b719fcb30519d53ea80887097"
   integrity sha512-kIhXYgF+ARNpYxO3qhz8yThDvKpaq+HDst8odPU9sCNEI66PSH6hrILhTmnffNnqdtY3LnKkU9rGVfZn+3TOTA==
@@ -11215,6 +11215,11 @@ is-plain-object@^2.0.3, is-plain-object@^2.0.4:
   dependencies:
     isobject "^3.0.1"
 
+is-plain-object@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-5.0.0.tgz#4427f50ab3429e9025ea7d52e9043a9ef4159344"
+  integrity sha512-VRSzKkbMm5jMDoKLbltAkFQ5Qr7VDiTFGXxYFXXowVj387GeGNOCsOH6Msy00SGZ3Fp84b1Naa1psqgcCIEP5Q==
+
 is-potential-custom-element-name@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/is-potential-custom-element-name/-/is-potential-custom-element-name-1.0.0.tgz#0c52e54bcca391bb2c494b21e8626d7336c6e397"
@@ -17169,6 +17174,15 @@ store2@^2.7.1:
   version "2.12.0"
   resolved "https://registry.yarnpkg.com/store2/-/store2-2.12.0.tgz#e1f1b7e1a59b6083b2596a8d067f6ee88fd4d3cf"
   integrity sha512-7t+/wpKLanLzSnQPX8WAcuLCCeuSHoWdQuh9SB3xD0kNOM38DNf+0Oa+wmvxmYueRzkmh6IcdKFtvTa+ecgPDw==
+
+storybook-react-context@^0.2.4:
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/storybook-react-context/-/storybook-react-context-0.2.4.tgz#7fe84f3fe8c13ee65a098dda9fa1dbbd7fdd2403"
+  integrity sha512-GfFVmgCq+KCCNjj3RockazIx8jAYEYtcgFoOBZMP0KalVqw/6n1BpZHYh38km2ohSQ/KDUwzoqUTi2ADZTzlGg==
+  dependencies:
+    "@storybook/addons" "^6.1.15"
+    is-plain-object "^5.0.0"
+    react "^17.0.1"
 
 stream-browserify@^2.0.1:
   version "2.0.2"

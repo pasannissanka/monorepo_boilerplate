@@ -1,26 +1,45 @@
 {
   "compilerOptions": {
+    "outDir": "./lib",
+    "module": "commonjs",
     "target": "es5",
     "lib": [
+      "es5",
+      "es6",
+      "es7",
+      "es2017",
       "dom",
-      "dom.iterable",
-      "esnext"
+      "esnext.asynciterable"
     ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
+    "sourceMap": true,
+    "allowJs": false,
+    "jsx": "react",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    "baseUrl": "src",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "composite": true,
+    "strict": true
   },
   "include": [
     "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "scripts",
+    "lib-esm",
+    "lib",
+    "**/*.story*",
   ]
 }

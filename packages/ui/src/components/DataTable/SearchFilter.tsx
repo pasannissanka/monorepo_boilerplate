@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from "react";
+import * as React from "react";
 import { useHistory } from "react-router-dom";
-import { useDataTableContext } from "../../components/DataTable/Context/DataTableContext";
+import { useDataTableContext } from "./Context/DataTableContext";
 import FilterMenu from "./FilterMenu";
+import { SearchFilterProps } from "./types";
 
-interface SearchFilterProps {
-	globalActions?: React.ReactNode;
-}
-
-export default function SearchFilter(props: SearchFilterProps) {
+/**
+ * Primary UI component search/ filter data elements
+ * TODO : Search by multiple fields
+ * 
+ */
+export function SearchFilter(props: SearchFilterProps) {
 	const { searchFields, search, setSearch } = useDataTableContext();
 
 	const history = useHistory();
 	const container = React.createRef<HTMLDivElement>();
-	const [toggleMenus, setToggleMenus] = useState({
+	const [toggleMenus, setToggleMenus] = React.useState({
 		filter: false,
 		search: false,
 	});
-	const [searchQ, setsearchQ] = useState({ search: "" });
+	const [searchQ, setsearchQ] = React.useState({ search: "" });
 
-	useEffect(() => {
+	React.useEffect(() => {
 		document.addEventListener("mousedown", handleClickOutside);
 	});
 

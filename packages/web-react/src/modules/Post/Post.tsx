@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import DataTable, {
-	ElementAction,
-	SearchFields,
-} from "../../components/DataTable/DataTable";
-import { LabelKeyValue } from "../../components/DataTable/Table";
 import ModalPanel from "../../components/ModalPanel/ModelPanel";
 import {
 	useGetPostsQuery,
 	useCreatePostMutation,
 } from "../../generated/graphql";
 import AddNewPost, { IPost } from "./AddNewPost/AddNewPost";
+
+import {
+	DataTable,
+	ElementAction,
+	LabelKeyValue,
+	SearchFields,
+} from "@solvedcard/ui/lib/src";
 
 interface UsersProps {}
 
