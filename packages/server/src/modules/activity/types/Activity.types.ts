@@ -1,5 +1,5 @@
 import { Field, InputType, Int, ObjectType } from "type-graphql";
-import { ActivityRecord } from "../models/ActivityRecord.model";
+import { ActivityRecord } from "../../../models/ActivityRecord";
 
 
 @InputType()

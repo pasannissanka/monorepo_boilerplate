@@ -1,12 +1,12 @@
-import { ActivityRecord } from "../../modules/activity/models/ActivityRecord.model";
+import { ActivityRecord } from "../../models/ActivityRecord";
 
 export interface IActivityInput {
   action: "create" | "edit" | "delete" | "change_pw";
   message: string;
-  by: number;
+  by: string;
   data: {
     type: string;
-    id: number;
+    id: string;
   }
 }
 
@@ -23,7 +23,7 @@ export class ActivityRecordBuilder {
   }
 
   async create(input: IActivityInput) {
-    const aR = ActivityRecord.create({
+    const aR = ActivityRecord.build({
       action: `${this.action}/${input.action}`,
       message: input.message,
       user: { id: input.by },

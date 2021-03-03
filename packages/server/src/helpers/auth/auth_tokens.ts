@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import * as jwt from "jsonwebtoken";
 import * as path from "path";
-import { User } from "src/modules/user/models/User";
+import { User } from "../../models/User";
 
 // Create a RSA public private keypair from http://travistidwell.com/jsencrypt/demo/
 // or

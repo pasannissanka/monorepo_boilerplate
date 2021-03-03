@@ -8,12 +8,13 @@ import { verify } from "jsonwebtoken";
 import * as path from "path";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
-import { createConnection } from "typeorm";
+// import { createConnection } from "typeorm";
 import { GenerateAuthTokens, TokenPayload } from "./helpers/auth/auth_tokens";
 import { customAuthChecker } from "./modules/common/authChecker";
 import { ContextType } from "./modules/common/types/Context.type";
-import { User } from "./modules/user/models/User";
+import { User } from "./models/User";
 import { ActivityResolver, PostResolver, UserResolver } from "./resolvers";
+import { sequelize } from "./sequelize";
 
 const PORT = process.env.PORT as string;
 const PATH = process.env.GRAPHQLPATH as string;
@@ -32,7 +33,8 @@ const publicKEYREFRESH = readFileSync(
 
 const main = async () => {
 	// Create db connection
-	await createConnection();
+	// await createConnection();
+	await sequelize.sync();
 
 	const app = express();
 
@@ -44,7 +46,7 @@ const main = async () => {
 	);
 
 	const schema = await buildSchema({
-		resolvers: [PostResolver, UserResolver, ActivityResolver],
+		resolvers: [UserResolver],
 		authChecker: customAuthChecker,
 	});
 

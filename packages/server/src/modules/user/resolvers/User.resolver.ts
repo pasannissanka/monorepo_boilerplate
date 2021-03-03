@@ -1,18 +1,18 @@
 import { ApolloError } from "apollo-server-express";
 import * as argon2 from "argon2";
-import { ActivityRecordBuilder } from "../../../helpers/activity/ActivityRecordBuilder";
+import { Op, UniqueConstraintError } from "sequelize";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { createQueryBuilder, SelectQueryBuilder } from "typeorm";
+import { ActivityRecordBuilder } from "../../../helpers/activity/ActivityRecordBuilder";
 import { GenerateAuthTokens } from "../../../helpers/auth/auth_tokens";
+import { User } from "../../../models/User";
 import { ContextType } from "../../common/types/Context.type";
-import { User } from "../models/User";
 import {
 	ChangePasswordInput,
 	LoginUserInput,
 	RegisterUserInput,
 	UserQueryParams,
 	UserQueryResponse,
-	UserResponse,
+	UserResponse
 } from "../types/user.type";
 
 @Resolver()
@@ -29,37 +29,60 @@ export class UserResolver {
 		@Arg("input") input: UserQueryParams,
 	): Promise<UserQueryResponse> {
 
-		let query: SelectQueryBuilder<any> = createQueryBuilder("user");
+		let nameQ, emailQ, usernameQ;
 		if (input.name) {
-			query.orWhere('User.firstName ILIKE :searchTerm', { searchTerm: `%${input?.name}%` })
-				.orWhere('User.lastName ILIKE :searchTerm', { searchTerm: `%${input?.name}%` })
-				.orWhere('User.username ILIKE :searchTerm', { searchTerm: `%${input?.name}%` })
+			nameQ = {
+				[Op.or]: [
+					{
+						firstName: {
+							[Op.iLike]: `%${input?.name}%`
+						},
+					}, {
+						lastName: {
+							[Op.iLike]: `%${input?.name}%`
+						},
+					}, {
+						username: {
+							[Op.iLike]: `%${input?.name}%`
+						},
+					}
+				]
+			}
 		}
 		if (input.email) {
-			query.orWhere('User.email ILIKE :searchTerm', { searchTerm: `%${input?.email}%` })
+			emailQ = {
+				email: {
+					[Op.iLike]: `%${input?.email}%`
+				}
+			}
 		}
 		if (input.username) {
-			query.orWhere('User.username ILIKE :searchTerm', { searchTerm: `%${input?.username}%` })
+			usernameQ = {
+				username: {
+					[Op.iLike]: `%${input?.username}%`
+				}
+			}
 		}
-		if (input.offset) {
-			query.offset(input.offset)
-		}
-		if (input.limit) {
-			query.limit(input.limit)
-		}
-
 		let result;
 		try {
-			result = await query.getManyAndCount();
+			result = await User.findAndCountAll({
+				where: {
+					[Op.or]: [
+						{ ...nameQ }, { ...emailQ }, { ...usernameQ }
+					],
+				},
+				limit: input.limit,
+				offset: input.offset
+			})
 		} catch (error) {
 			console.log(error)
 			throw new ApolloError("Internal server error");
 		}
-		const [users, count] = result;
+		const { rows, count } = result;
 
 		return {
-			users,
-			count
+			count: count,
+			users: rows
 		}
 	}
 
@@ -69,26 +92,25 @@ export class UserResolver {
 		@Ctx() ctx: ContextType
 	): Promise<UserResponse> {
 		const hashedPassword = await argon2.hash(input.password);
-		const user = User.create({
-			username: input.username,
-			email: input.email,
-			password: hashedPassword,
-			firstName: input.firstName,
-			lastName: input.lastName,
-		});
-
+		let user: User;
 		try {
-			await user.save();
+			user = await User.create({
+				username: input.username,
+				email: input.email,
+				password: hashedPassword,
+				firstName: input.firstName,
+				lastName: input.lastName,
+			});
 		} catch (error) {
-			console.log(error);
-			if (error.detail?.includes("already exists")) {
-				if (error.detail.includes("username")) {
+			if (error instanceof UniqueConstraintError) {
+				if (error.errors[0].path === "username") {
 					throw new ApolloError("Username already taken");
 				} else {
 					throw new ApolloError("Email already exists");
 				}
+			} else {
+				throw new ApolloError("Internal server error");
 			}
-			throw new ApolloError("Internal server error");
 		}
 
 		const { accessToken, refreshToken } = GenerateAuthTokens(user);
@@ -121,10 +143,12 @@ export class UserResolver {
 		@Ctx() ctx: ContextType
 	): Promise<UserResponse> {
 		const user = await User.findOne({
-			where: [
-				{ email: input.emailOrUserName },
-				{ username: input.emailOrUserName },
-			],
+			where: {
+				[Op.or]: [
+					{ username: input.emailOrUserName },
+					{ email: input.emailOrUserName },
+				]
+			}
 		});
 		if (!user) {
 			throw new ApolloError("Invalid username or password");
@@ -157,7 +181,7 @@ export class UserResolver {
 		}
 		user.count += 1;
 		try {
-			await User.update(user.id, user);
+			await User.update(user, { where: { id: user.id } });
 		} catch (error) {
 			throw new ApolloError("Internal server error");
 		}
@@ -185,7 +209,7 @@ export class UserResolver {
 		const hashedPasswordNew = await argon2.hash(input.newPassword);
 		user.password = hashedPasswordNew;
 		try {
-			await User.update(user.id, user);
+			await User.update(user, { where: { id: user.id } });
 		} catch (error) {
 			throw new ApolloError("Internal server error");
 		}
