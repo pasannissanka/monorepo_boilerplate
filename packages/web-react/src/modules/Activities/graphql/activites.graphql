@@ -1,0 +1,26 @@
+query getActivities (
+  $limit: Int
+	$offset: Int
+	$type: String
+) {
+  getActivites (input: {limit: $limit, type: $type, offset: $offset}) {
+    activities {
+      id
+      user {
+        id
+        username
+        email
+      }
+      activityData {
+        id
+        type
+        f_id
+      }
+      message
+      action
+      created
+    }
+    count
+  }
+
+}

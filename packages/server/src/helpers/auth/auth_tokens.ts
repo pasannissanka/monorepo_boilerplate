@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import * as jwt from "jsonwebtoken";
 import * as path from "path";
-import { User } from "src/modules/user/models/User";
+import { User } from "../../models/User";
 
 // Create a RSA public private keypair from http://travistidwell.com/jsencrypt/demo/
 // or
@@ -15,10 +15,19 @@ const privateKEYREFRESH = readFileSync(
 	"utf8"
 );
 
+export const publicKEYACCESS = readFileSync(
+	path.resolve("./keys/public_access.key"),
+	"utf8"
+);
+export const publicKEYREFRESH = readFileSync(
+	path.resolve("./keys/public_refresh.key"),
+	"utf8"
+);
+
 export interface TokenPayload {
-  uuid: string,
-  email: string,
-  count?: number
+	uuid: string,
+	email: string,
+	count?: number
 }
 
 export function GenerateAuthTokens(user: User) {

@@ -21,6 +21,8 @@ query getUsers(
 			email
 			firstName
 			lastName
+			created
+      updated
 		}
 	}
 }

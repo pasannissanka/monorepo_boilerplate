@@ -1,2 +1,3 @@
-export * from "./modules/user/resolvers/User.resolver"
-export * from './modules/post/resolvers/post.resolver'
+export * from "./modules/user/User.resolver"
+export * from './modules/post/Post.resolver'
+export * from './modules/activity/Activity.resolver'
