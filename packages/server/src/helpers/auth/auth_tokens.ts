@@ -15,10 +15,19 @@ const privateKEYREFRESH = readFileSync(
 	"utf8"
 );
 
+export const publicKEYACCESS = readFileSync(
+	path.resolve("./keys/public_access.key"),
+	"utf8"
+);
+export const publicKEYREFRESH = readFileSync(
+	path.resolve("./keys/public_refresh.key"),
+	"utf8"
+);
+
 export interface TokenPayload {
-  uuid: string,
-  email: string,
-  count?: number
+	uuid: string,
+	email: string,
+	count?: number
 }
 
 export function GenerateAuthTokens(user: User) {
