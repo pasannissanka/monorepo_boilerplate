@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import DataTable, {
+import {
+	DataTable,
 	ElementAction,
+	LabelKeyValue,
 	SearchFields,
-} from "../../components/DataTable/DataTable";
-import { LabelKeyValue } from "../../components/DataTable/Table";
+} from "@solvedcard/ui";
+import React, { useEffect, useState } from "react";
 import ModalPanel from "../../components/ModalPanel/ModelPanel";
 import { useGetUsersQuery } from "../../generated/graphql";
 
@@ -139,7 +140,6 @@ export default function Users(props: UsersProps) {
 	}, [data]);
 
 	const totalCount = data?.getUsers.count;
-
 
 	return (
 		<React.Fragment>

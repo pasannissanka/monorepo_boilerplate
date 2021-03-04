@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
-import ModalPanel from "../../components/ModalPanel/ModelPanel";
-import {
-	useGetPostsQuery,
-	useCreatePostMutation,
-} from "../../generated/graphql";
-import AddNewPost, { IPost } from "./AddNewPost/AddNewPost";
-
 import {
 	DataTable,
 	ElementAction,
 	LabelKeyValue,
 	SearchFields,
 } from "@solvedcard/ui";
+import React, { useEffect, useState } from "react";
+import ModalPanel from "../../components/ModalPanel/ModelPanel";
+import {
+	useCreatePostMutation,
+	useGetPostsQuery,
+} from "../../generated/graphql";
+import AddNewPost, { IPost } from "./AddNewPost/AddNewPost";
 
 interface UsersProps {}
 
@@ -135,8 +134,15 @@ export default function Posts(props: UsersProps) {
 	const [createPostMutation] = useCreatePostMutation();
 
 	const createNewPost = () => {
+		console.log(post.content);
 		createPostMutation({
-			variables: post,
+			variables: {
+				content: `${post.content.replaceAll(
+					/(((\u00a0|\u00a0 )\n)|(\n)|( \n))+/g,
+					""
+				)}`,
+				title: post.title,
+			},
 		})
 			.then((data) => {
 				console.log(data);

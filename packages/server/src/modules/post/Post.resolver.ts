@@ -71,6 +71,7 @@ export class PostResolver {
 		@Arg("content") content: string,
 		@Ctx() ctx: ContextType
 	): Promise<Post> {
+		// TODO check length, remove new lines
 		const post = Post.build({ content, title });
 		try {
 			await post.save();
