@@ -34,13 +34,6 @@
     "reflect-metadata": "^0.1.13",
     "sequelize": "^6.5.0",
     "sequelize-typescript": "^2.1.0",
-    "type-graphql": "^1.1.1",
-    "typeorm": "^0.2.30"
-  },
-  "workspaces": {
-    "nohoist": [
-      "typeorm",
-      "typeorm/**"
-    ]
+    "type-graphql": "^1.1.1"
   }
 }

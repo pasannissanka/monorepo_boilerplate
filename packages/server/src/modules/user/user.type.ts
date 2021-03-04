@@ -1,6 +1,6 @@
 import { IsEmail, MaxLength, MinLength } from "class-validator";
 import { Field, InputType, Int, ObjectType } from "type-graphql";
-import { User } from "../../../models/User";
+import { User } from "../../models/User";
 
 @InputType()
 export class RegisterUserInput {

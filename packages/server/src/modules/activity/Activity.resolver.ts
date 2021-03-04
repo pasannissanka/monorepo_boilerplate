@@ -1,11 +1,11 @@
 import { ApolloError } from "apollo-server-express";
 import { Op } from "sequelize";
 import { Arg, Authorized, Ctx, Query, Resolver } from "type-graphql";
-import { ActivityData } from "../../../models/ActivityData";
-import { ActivityRecord } from "../../../models/ActivityRecord";
-import { User } from "../../../models/User";
-import { ContextType } from "../../../modules/common/types/Context.type";
-import { ActivitiesFilterParams, ActivitiesResponse } from "../types/Activity.types";
+import { ActivityData } from "../../models/ActivityData";
+import { ActivityRecord } from "../../models/ActivityRecord";
+import { User } from "../../models/User";
+import { ContextType } from "../../common/Context.type";
+import { ActivitiesFilterParams, ActivitiesResponse } from "./Activity.types";
 
 @Resolver()
 export class ActivityResolver {

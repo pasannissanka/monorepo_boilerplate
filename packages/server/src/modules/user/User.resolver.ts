@@ -2,10 +2,10 @@ import { ApolloError } from "apollo-server-express";
 import * as argon2 from "argon2";
 import { Op, UniqueConstraintError } from "sequelize";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { ActivityRecordBuilder } from "../../../helpers/activity/ActivityRecordBuilder";
-import { GenerateAuthTokens } from "../../../helpers/auth/auth_tokens";
-import { User } from "../../../models/User";
-import { ContextType } from "../../common/types/Context.type";
+import { ActivityRecordBuilder } from "../../helpers/activity/ActivityRecordBuilder";
+import { GenerateAuthTokens } from "../../helpers/auth/auth_tokens";
+import { User } from "../../models/User";
+import { ContextType } from "../../common/Context.type";
 import {
 	ChangePasswordInput,
 	LoginUserInput,
@@ -13,7 +13,7 @@ import {
 	UserQueryParams,
 	UserQueryResponse,
 	UserResponse
-} from "../types/user.type";
+} from "./user.type";
 
 @Resolver()
 export class UserResolver {

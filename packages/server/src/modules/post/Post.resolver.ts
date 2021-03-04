@@ -1,10 +1,10 @@
 import { ApolloError } from "apollo-server-express";
 import { Op } from "sequelize";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { ActivityRecordBuilder } from "../../../helpers/activity/ActivityRecordBuilder";
-import { Post } from "../../../models/Post";
-import { ContextType } from "../../../modules/common/types/Context.type";
-import { PostSearchParams, PostSearchResponse } from "../types/post.types";
+import { ActivityRecordBuilder } from "../../helpers/activity/ActivityRecordBuilder";
+import { Post } from "../../models/Post";
+import { ContextType } from "../../common/Context.type";
+import { PostSearchParams, PostSearchResponse } from "./post.types";
 
 @Resolver()
 export class PostResolver {
