@@ -1,4 +1,4 @@
-import { Column, CreatedAt, DataType, Default, HasMany, IsUUID, Table, Unique, UpdatedAt, Model, PrimaryKey } from "sequelize-typescript";
+import { Column, CreatedAt, DataType, Default, HasMany, Model, PrimaryKey, Table, Unique, UpdatedAt } from "sequelize-typescript";
 import { Field, ID, ObjectType } from "type-graphql";
 import { ActivityRecord } from "./ActivityRecord";
 

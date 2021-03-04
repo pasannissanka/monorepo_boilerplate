@@ -1,9 +1,9 @@
 import { ApolloError } from "apollo-server-express";
+import { Op } from "sequelize";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { SelectQueryBuilder } from "typeorm";
 import { ActivityRecordBuilder } from "../../../helpers/activity/ActivityRecordBuilder";
+import { Post } from "../../../models/Post";
 import { ContextType } from "../../../modules/common/types/Context.type";
-import { Post } from "../models/post";
 import { PostSearchParams, PostSearchResponse } from "../types/post.types";
 
 @Resolver()
@@ -19,26 +19,44 @@ export class PostResolver {
 	async getPosts(
 		@Arg("input") input: PostSearchParams
 	): Promise<PostSearchResponse> {
-		let query: SelectQueryBuilder<Post> = Post.createQueryBuilder();
 
+		let titleQ, allQ;
 		if (input.title) {
-			query.orWhere('Post.title ILIKE :searchTerm', { searchTerm: `%${input?.title}%` });
+			titleQ = {
+				title: {
+					[Op.iLike]: `%${input?.title}%`
+				}
+			}
 		}
 		if (input.all) {
-			query.orWhere('Post.title ILIKE :searchTerm', { searchTerm: `%${input?.all}%` });
-			query.orWhere('Post.content ILIKE :searchTerm', { searchTerm: `%${input?.all}%` });
+			allQ = {
+				[Op.or]: [
+					{
+						title: {
+							[Op.iLike]: `%${input?.all}%`
+						}
+					},
+					{
+						content: {
+							[Op.iLike]: `%${input?.all}%`
+						}
+					}
+				]
+			}
 		}
-		if (input.offset) {
-			query.offset(input.offset)
+		const whereclause = !titleQ && !allQ ? {} : {
+			[Op.or]: [
+				{ ...titleQ }, { ...allQ }
+			]
 		}
-		if (input.limit) {
-			query.limit(input.limit)
-		}
-
 		try {
-			const [posts, count] = await query.getManyAndCount();
+			const { rows, count } = await Post.findAndCountAll({
+				where: whereclause,
+				limit: input.limit,
+				offset: input.offset
+			})
 			return {
-				posts,
+				posts: rows,
 				count
 			}
 		} catch (error) {
@@ -53,7 +71,7 @@ export class PostResolver {
 		@Arg("content") content: string,
 		@Ctx() ctx: ContextType
 	): Promise<Post> {
-		const post = Post.create({ content, title });
+		const post = Post.build({ content, title });
 		try {
 			await post.save();
 		} catch (error) {

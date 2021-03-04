@@ -1,3 +1,4 @@
+import { ActivityData } from "../../models/ActivityData";
 import { ActivityRecord } from "../../models/ActivityRecord";
 
 export interface IActivityInput {
@@ -23,22 +24,23 @@ export class ActivityRecordBuilder {
   }
 
   async create(input: IActivityInput) {
-    const aR = ActivityRecord.build({
-      action: `${this.action}/${input.action}`,
-      message: input.message,
-      user: { id: input.by },
-      activityData: {
-        type: input.data.type,
-        f_id: input.data.id
-      }
-    })
-
     try {
-      await aR.save()
+      const aR = await ActivityRecord.create({
+        action: `${this.action}/${input.action}`,
+        message: input.message,
+        userId: input.by,
+        activityData: {
+          type: input.data.type,
+          f_id: input.data.id
+        }
+      }, {
+        include: [ActivityData]
+      })
+      return aR;
     } catch (error) {
       console.error('ACTIVITY RECORD CREATE ERROR! : ', error);
+      return null;
     }
 
-    return aR;
   }
 }

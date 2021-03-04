@@ -1,5 +1,5 @@
 import { Field, InputType, Int, ObjectType } from "type-graphql";
-import { Post } from "../models/post";
+import { Post } from "../../../models/Post";
 
 
 @InputType()

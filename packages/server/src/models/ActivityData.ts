@@ -1,5 +1,5 @@
 import { BelongsTo, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
-import { Field, ID, Int, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import { ActivityRecord } from "./ActivityRecord";
 
 @Table
@@ -15,11 +15,12 @@ export class ActivityData extends Model {
   @Column
   type: string;
 
-  @Field(() => Int)
-  @Column
-  f_id: number;
+  @Field(() => ID)
+  @Column(DataType.UUID)
+  f_id: string;
 
   @ForeignKey(() => ActivityRecord)
+  @Column(DataType.UUID)
   public activityRecordId: string;
 
   @BelongsTo(() => ActivityRecord)

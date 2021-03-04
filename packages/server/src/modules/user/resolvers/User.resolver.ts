@@ -64,13 +64,14 @@ export class UserResolver {
 			}
 		}
 		let result;
+		const whereclause = !nameQ && !emailQ && !usernameQ ? {} : {
+			[Op.or]: [
+				{ ...nameQ }, { ...emailQ }, { ...usernameQ }
+			],
+		}
 		try {
 			result = await User.findAndCountAll({
-				where: {
-					[Op.or]: [
-						{ ...nameQ }, { ...emailQ }, { ...usernameQ }
-					],
-				},
+				where: whereclause,
 				limit: input.limit,
 				offset: input.offset
 			})

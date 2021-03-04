@@ -10,9 +10,9 @@ import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 // import { createConnection } from "typeorm";
 import { GenerateAuthTokens, TokenPayload } from "./helpers/auth/auth_tokens";
+import { User } from "./models/User";
 import { customAuthChecker } from "./modules/common/authChecker";
 import { ContextType } from "./modules/common/types/Context.type";
-import { User } from "./models/User";
 import { ActivityResolver, PostResolver, UserResolver } from "./resolvers";
 import { sequelize } from "./sequelize";
 
@@ -46,7 +46,7 @@ const main = async () => {
 	);
 
 	const schema = await buildSchema({
-		resolvers: [UserResolver],
+		resolvers: [UserResolver, PostResolver, ActivityResolver],
 		authChecker: customAuthChecker,
 	});
 
