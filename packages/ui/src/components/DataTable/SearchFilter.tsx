@@ -1,8 +1,9 @@
 import * as React from "react";
 import { useHistory } from "react-router-dom";
 import { useDataTableContext } from "./Context/DataTableContext";
-import FilterMenu from "./FilterMenu";
 import { SearchFilterProps } from "./types";
+
+import { Menu } from '@headlessui/react'
 
 /**
  * Primary UI component search/ filter data elements
@@ -10,7 +11,7 @@ import { SearchFilterProps } from "./types";
  * 
  */
 export function SearchFilter(props: SearchFilterProps) {
-	const { searchFields, search, setSearch } = useDataTableContext();
+	const { searchFields, setSearchFields, search, setSearch, labelState, setLabelState } = useDataTableContext();
 
 	const history = useHistory();
 	const container = React.createRef<HTMLDivElement>();
@@ -51,6 +52,30 @@ export function SearchFilter(props: SearchFilterProps) {
 		});
 	};
 
+	const handleCheckOnChange = (index: number, key: string, type: "search" | "filter") => {
+
+		if (type === "filter") {
+			setLabelState!([
+				...labelState!.slice(0, index),
+				{
+					...labelState![index],
+					selected: !labelState![index].selected,
+				},
+				...labelState!.slice(index + 1),
+			]);
+		}
+		if (type === "search") {
+			setSearchFields!([
+				...searchFields!.map((label) => {
+					return {
+						...label,
+						selected: label.key === key ? true : false,
+					};
+				}),
+			]);
+		}
+	};
+
 	return (
 		<React.Fragment>
 			<div className="mb-4 flex justify-start items-center">
@@ -86,32 +111,60 @@ export function SearchFilter(props: SearchFilterProps) {
 
 				<div className="flex">
 					<div className="relative">
-						<button
-							className="shadow rounded-none inline-flex items-center bg-transparent hover:text-blue-500 focus:outline-none focus:shadow-outline text-gray-500 py-2 px-2 md:px-4 text-sm"
-							onClick={() =>
-								setToggleMenus({ ...toggleMenus, search: !toggleMenus.search })
-							}
-						>
-							<span className="hidden md:block">{selectedSearch?.value}</span>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="w-5 h-5 ml-1"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								strokeWidth="2"
-								stroke="currentColor"
-								fill="none"
-								strokeLinecap="round"
-								strokeLinejoin="round"
+						<Menu as={React.Fragment}>
+							<Menu.Button
+								className="shadow rounded-none inline-flex items-center bg-transparent hover:text-blue-500 focus:outline-none focus:shadow-outline text-gray-500 py-2 px-2 md:px-4 text-sm"
+								onClick={() =>
+									setToggleMenus({ ...toggleMenus, search: !toggleMenus.search })
+								}
 							>
-								<rect x="0" y="0" width="24" height="24" stroke="none"></rect>
-								<polyline points="6 9 12 15 18 9" />
-							</svg>
-						</button>
-						{toggleMenus.search ? (
-							<FilterMenu ref={container} type="radio" />
-						) : null}
+								<span className="hidden md:block">{selectedSearch?.value}</span>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="w-5 h-5 ml-1"
+									width="24"
+									height="24"
+									viewBox="0 0 24 24"
+									strokeWidth="2"
+									stroke="currentColor"
+									fill="none"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<rect x="0" y="0" width="24" height="24" stroke="none"></rect>
+									<polyline points="6 9 12 15 18 9" />
+								</svg>
+							</Menu.Button>
+							<Menu.Items
+								className="z-10 absolute top-0 left-0 w-40 bg-white rounded-lg shadow-lg mt-12 -mr-1 block py-1 overflow-hidden"
+							>
+								{searchFields!.map(({ value, selected, key }, index) => (
+									<Menu.Item
+										key={index}
+										className="flex justify-start items-center text-truncate hover:bg-gray-100 px-4 py-2"
+										onClick={() => handleCheckOnChange(index, key, "search")}
+									>
+										{() => (
+											<label
+												key={index}
+												className={`flex justify-start items-center text-truncate hover:bg-gray-100 px-4 py-2`}
+											>
+												<div className="text-teal-600 mr-3">
+													<input
+														type="radio"
+														className="form-checkbox focus:outline-none focus:shadow-outline"
+														value={value}
+														checked={selected}
+														onChange={() => handleCheckOnChange(index, key, "search")}
+													/>
+												</div>
+												<div className="select-none text-gray-700">{value}</div>
+											</label>
+										)}
+									</Menu.Item>
+								))}
+							</Menu.Items>
+						</Menu>
 						<button
 							className="shadow rounded-lg rounded-l-none inline-flex items-center bg-transparent hover:text-blue-500 focus:outline-none focus:shadow-outline text-gray-500 py-2 px-2 md:px-4 text-sm"
 							onClick={handleSetSearchQuery}
@@ -134,14 +187,12 @@ export function SearchFilter(props: SearchFilterProps) {
 						</button>
 					</div>
 				</div>
-
 				<div className="md:flex-1"></div>
-
 				<div>
 					{/* Row display */}
 					<div className="relative">
-						<div className="flex">
-							<button
+						<Menu as="div" className="flex">
+							<Menu.Button
 								className="shadow rounded-lg inline-flex items-center bg-white hover:text-blue-500 focus:outline-none focus:shadow-outline text-gray-500 font-semibold py-2 px-2 md:px-4 text-sm"
 								onClick={() =>
 									setToggleMenus({
@@ -179,15 +230,39 @@ export function SearchFilter(props: SearchFilterProps) {
 									<rect x="0" y="0" width="24" height="24" stroke="none"></rect>
 									<polyline points="6 9 12 15 18 9" />
 								</svg>
-							</button>
-							{toggleMenus.filter ? (
-								<FilterMenu ref={container} type="checkbox" />
-							) : null}
-						</div>
+							</Menu.Button>
+							<Menu.Items
+								className="z-10 absolute top-0 left-0 w-40 bg-white rounded-lg shadow-lg mt-12 -mr-1 block py-1 overflow-hidden"
+							>
+								{labelState!.map(({ value, selected, key }, index) => (
+									<Menu.Item
+										key={index}
+										className="flex justify-start items-center text-truncate hover:bg-gray-100 px-4 py-2"
+										onClick={() => handleCheckOnChange(index, key, "filter")}
+									>
+										{() => (
+											<label
+												key={index}
+												className={`flex justify-start items-center text-truncate hover:bg-gray-100 px-4 py-2`}
+											>
+												<div className="text-teal-600 mr-3">
+													<input
+														type="checkbox"
+														className="form-checkbox focus:outline-none focus:shadow-outline"
+														value={value}
+														checked={selected}
+														onChange={() => handleCheckOnChange(index, key, "filter")}
+													/>
+												</div>
+												<div className="select-none text-gray-700">{value}</div>
+											</label>
+										)}
+									</Menu.Item>
+								))}
+							</Menu.Items>
+						</Menu>
 					</div>
 				</div>
-				{/* Add */}
-
 				{props.globalActions}
 			</div>
 		</React.Fragment>
